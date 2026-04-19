@@ -84,7 +84,7 @@ def run_interactive():
         elif cmd == "about":
             from lynx_energy import get_about_text; from rich.panel import Panel as P
             a = get_about_text()
-            console.print(P(f"[bold blue]{a['name']}[/]\n[dim]{a['suite']} v{a['version']}[/]\n\n[bold]By:[/] {a['author']}\n\n[dim]{a['description']}[/]",
+            console.print(P(f"[bold blue]{a['name']} v{a['version']}[/]\n[dim]Part of {a['suite']} v{a['suite_version']}[/]\n\n[bold]By:[/] {a['author']}\n\n[dim]{a['description']}[/]",
                             title="[bold]About[/]", border_style="blue"))
         elif cmd == "explain":
             from lynx_energy.metrics.explanations import get_explanation

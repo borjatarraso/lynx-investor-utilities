@@ -5,7 +5,7 @@ from __future__ import annotations
 import argparse
 import sys
 
-from lynx_energy import __author__, __author_email__, __license__, __version__, __year__
+from lynx_energy import __author__, __author_email__, __license__, __version__, __year__, SUITE_LABEL
 
 
 def build_parser():
@@ -52,7 +52,8 @@ def build_parser():
     parser.add_argument("--verbose", "-v", action="store_true")
     parser.add_argument("--export", choices=["txt", "html", "pdf"], metavar="FORMAT")
     parser.add_argument("--output", metavar="PATH")
-    parser.add_argument("--version", action="version", version=f"%(prog)s {__version__} ({__year__}) by {__author__}")
+    parser.add_argument("--version", action="version",
+                        version=f"%(prog)s {__version__}  |  {SUITE_LABEL}  ({__year__}) by {__author__}")
     parser.add_argument("--about", action="store_true")
     parser.add_argument("--explain", metavar="METRIC", nargs="?", const="__list__")
     parser.add_argument("--explain-section", metavar="SECTION", nargs="?", const="__list__")
@@ -76,7 +77,7 @@ def run_cli():
         from rich.console import Console; from rich.panel import Panel; from lynx_energy import get_about_text
         about = get_about_text(); c = Console(stderr=True)
         c.print(f"[bold green]{about['logo']}[/]")
-        c.print(Panel(f"[bold blue]{about['name']}[/]\n[dim]{about['suite']}[/]\n[dim]Version {about['version']}[/]\n\n"
+        c.print(Panel(f"[bold blue]{about['name']} v{about['version']}[/]\n[dim]Part of {about['suite']} v{about['suite_version']}[/]\n\n"
                       f"[bold]By:[/] {about['author']}\n[bold]License:[/] {about['license']}\n\n[dim]{about['description']}[/]",
                       title="[bold]About[/]", border_style="blue"))
         return
