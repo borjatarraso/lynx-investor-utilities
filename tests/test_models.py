@@ -59,6 +59,15 @@ class TestClassifyStage:
     def test_royalty(self):
         assert classify_stage("royalty and streaming company", 20_000_000) == CompanyStage.ROYALTY
 
+    def test_integrated_major_not_royalty(self):
+        """Companies with 'upstream/downstream' should NOT be classified as Royalty."""
+        desc = "Engages in exploration and production of crude oil. Upstream and downstream operations."
+        assert classify_stage(desc, 300_000_000_000) == CompanyStage.PRODUCER
+
+    def test_revenue_without_keywords_defaults_producer(self):
+        """Revenue-generating company with no stage keywords defaults to Producer."""
+        assert classify_stage("generic energy company", 50_000_000) == CompanyStage.PRODUCER
+
     def test_none_description(self):
         assert classify_stage(None, None) == CompanyStage.GRASSROOTS
 

@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import dataclasses
+import re
 from concurrent.futures import ThreadPoolExecutor
 from typing import Callable, Optional
 
@@ -63,17 +64,19 @@ def _validate_sector(profile: CompanyProfile) -> None:
             if allowed in industry or industry in allowed:
                 return
 
-    # Allow if the description mentions energy-specific terms
-    import re
+    # Allow if the description mentions energy-specific terms (not generic ones)
     desc = (profile.description or "").lower()
     energy_specific = [
-        r"\boil\b", r"\bgas\b", r"\bpetroleum\b", r"\bcrude\b",
-        r"\bnatural gas\b", r"\bpipeline\b", r"\brefin",
-        r"\bupstream\b", r"\bdownstream\b", r"\bmidstream\b",
-        r"\bdrill", r"\bwell\b", r"\breservoir\b", r"\bbarrel\b",
-        r"\bboe\b", r"\bproduction\b", r"\be&p\b", r"\boilfield\b",
-        r"\blng\b", r"\bngl\b",
-        r"\buranium\b", r"\bnuclear\b", r"\bcoal\b", r"\bthermal\b",
+        r"\bcrude oil\b", r"\bpetroleum\b", r"\bnatural gas\b",
+        r"\boil.{0,15}gas\b", r"\boil.{0,10}production\b",
+        r"\bgas.{0,10}production\b", r"\boil.{0,10}exploration\b",
+        r"\bpipeline\b", r"\brefinery\b", r"\brefining\b",
+        r"\bupstream.{0,30}downstream\b", r"\bmidstream\b",
+        r"\bdrilling\b", r"\boil.?field\b", r"\bwellhead\b",
+        r"\breservoir\b", r"\bbarrels?\s+(of\s+)?oil\b", r"\bboe\b",
+        r"\be&p\b", r"\blng\b", r"\bngl\b",
+        r"\buranium\b", r"\bnuclear\b",
+        r"\bthermal coal\b", r"\bcoal mine\b", r"\bcoal mining\b",
     ]
     if any(re.search(pattern, desc) for pattern in energy_specific):
         return

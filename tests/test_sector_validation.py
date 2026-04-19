@@ -89,3 +89,34 @@ class TestSectorValidation:
     def test_error_message_content(self):
         with pytest.raises(SectorMismatchError, match="outside the scope"):
             _validate_sector(self._profile(sector="Technology", industry="Software"))
+
+    def test_generic_production_blocked(self):
+        """A company mentioning 'production' generically should NOT pass validation."""
+        with pytest.raises(SectorMismatchError):
+            _validate_sector(self._profile(
+                sector="Technology", industry="Consumer Electronics",
+                desc="Designs and manufactures consumer electronics and production of software"))
+
+    def test_generic_gas_blocked(self):
+        """A company mentioning 'gas' in non-energy context should NOT pass."""
+        with pytest.raises(SectorMismatchError):
+            _validate_sector(self._profile(
+                sector="Healthcare", industry="Medical Devices",
+                desc="Produces medical gas delivery systems for hospitals"))
+
+    def test_downstream_alone_blocked(self):
+        """A company with 'downstream' but no energy context should NOT pass."""
+        with pytest.raises(SectorMismatchError):
+            _validate_sector(self._profile(
+                sector="Industrials", industry="Industrial Distribution",
+                desc="Downstream distribution of industrial equipment"))
+
+    def test_crude_oil_in_desc_allowed(self):
+        """A company explicitly mentioning 'crude oil' should pass."""
+        _validate_sector(self._profile(sector="Other", industry="Other",
+                                       desc="Crude oil and natural gas production in Texas"))
+
+    def test_uranium_in_desc_allowed(self):
+        """A company mentioning uranium should pass."""
+        _validate_sector(self._profile(sector="Other", industry="Other",
+                                       desc="Uranium mining and nuclear fuel production"))

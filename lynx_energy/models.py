@@ -463,7 +463,7 @@ _COMMODITY_KEYWORDS = {
     Commodity.NATURAL_GAS: ["natural gas", "methane", "shale gas", "gas production", "gas wells"],
     Commodity.LNG: ["lng", "liquefied natural gas", "liquefaction", "lng export", "lng terminal"],
     Commodity.NGL: ["ngl", "natural gas liquids", "condensate", "propane", "butane"],
-    Commodity.URANIUM: ["uranium", "u3o8", "U3O8", "nuclear", "yellowcake"],
+    Commodity.URANIUM: ["uranium", "u3o8", "nuclear", "yellowcake"],
     Commodity.COAL: ["coal", "thermal coal", "metallurgical coal", "coking coal"],
     Commodity.HYDROGEN: ["hydrogen", "h2", "green hydrogen", "blue hydrogen", "electrolysis"],
     Commodity.RENEWABLE: ["solar", "wind", "renewable", "geothermal", "hydroelectric", "biomass"],
@@ -492,18 +492,26 @@ def classify_stage(description: Optional[str], revenue: Optional[float],
     desc_lower = description.lower()
 
     if revenue is not None and revenue > 10_000_000:
-        for kw in ["royalty", "streaming", "stream"]:
-            if kw in desc_lower:
+        import re as _re
+        for pattern in [r"\broyalty\b", r"\bstreaming\b", r"\broyalty.{0,5}company\b"]:
+            if _re.search(pattern, desc_lower):
                 return CompanyStage.ROYALTY
         for kw in _STAGE_KEYWORDS[CompanyStage.PRODUCER]:
             if kw.lower() in desc_lower:
                 return CompanyStage.PRODUCER
+        # Revenue-generating company with no stage keywords defaults to Producer
+        return CompanyStage.PRODUCER
 
-    for stage in [CompanyStage.PRODUCER, CompanyStage.DEVELOPER,
+    for stage in [CompanyStage.DEVELOPER,
                   CompanyStage.EXPLORER, CompanyStage.GRASSROOTS]:
         for kw in _STAGE_KEYWORDS[stage]:
             if kw.lower() in desc_lower:
                 return stage
+
+    # Check PRODUCER keywords last in the fallback (no revenue threshold met)
+    for kw in _STAGE_KEYWORDS[CompanyStage.PRODUCER]:
+        if kw.lower() in desc_lower:
+            return CompanyStage.PRODUCER
 
     if info:
         industry = (info.get("industry") or "").lower()
@@ -538,14 +546,25 @@ def classify_commodity(description: Optional[str],
 
 def classify_jurisdiction(country: Optional[str],
                           description: Optional[str] = None) -> JurisdictionTier:
+    import re as _re
     if not country:
         return JurisdictionTier.UNKNOWN
     c_lower = country.lower().strip()
-    desc_lower = (description or "").lower()
+    # Only check country field with substring (country names are reliable)
+    # Use word-boundary for description to avoid false positives (e.g. "india" in "Indiana")
     for j in _TIER_1_JURISDICTIONS:
-        if j in c_lower or j in desc_lower:
+        if j in c_lower:
             return JurisdictionTier.TIER_1
     for j in _TIER_2_JURISDICTIONS:
-        if j in c_lower or j in desc_lower:
+        if j in c_lower:
             return JurisdictionTier.TIER_2
+    # Fallback: check description with word boundaries
+    if description:
+        desc_lower = description.lower()
+        for j in _TIER_1_JURISDICTIONS:
+            if _re.search(r'\b' + _re.escape(j) + r'\b', desc_lower):
+                return JurisdictionTier.TIER_1
+        for j in _TIER_2_JURISDICTIONS:
+            if _re.search(r'\b' + _re.escape(j) + r'\b', desc_lower):
+                return JurisdictionTier.TIER_2
     return JurisdictionTier.TIER_3

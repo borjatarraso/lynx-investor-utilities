@@ -603,12 +603,10 @@ def calc_market_intelligence(
 
     # ── 4. Short interest ────────────────────────────────────────────
     mi.shares_short = info.get("sharesShort")
-    short_pct_raw = info.get("shortPercentOfFloat")
-    if short_pct_raw is not None:
-        mi.short_pct_of_float = short_pct_raw * 100
+    mi.short_pct_of_float = info.get("shortPercentOfFloat")
     mi.short_ratio_days = info.get("shortRatio")
 
-    short_pct = mi.short_pct_of_float or 0
+    short_pct = (mi.short_pct_of_float or 0) * 100  # convert to % for thresholds
     short_ratio = mi.short_ratio_days or 0
     if short_pct > 15 and short_ratio > 5:
         mi.short_squeeze_risk = "High squeeze potential"

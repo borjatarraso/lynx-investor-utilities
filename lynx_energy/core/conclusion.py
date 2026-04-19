@@ -177,8 +177,8 @@ def _score_growth(r: AnalysisReport) -> float:
         if dil is not None:
             if dil < 0.01: score += 15
             elif dil < 0.05: score += 5
-            elif dil > 0.10: score -= 15
             elif dil > 0.20: score -= 25
+            elif dil > 0.10: score -= 15
         bv = _safe(g.book_value_growth_yoy, None)
         if bv is not None:
             if bv > 0.10: score += 10

@@ -170,7 +170,7 @@ def export_txt(report: AnalysisReport, output_path: Path) -> Path:
     # Profitability Metrics
     # ------------------------------------------------------------------
     lines += _section("PROFITABILITY METRICS")
-    _pre_revenue = _ev(p.stage) in ("Grassroots Explorer", "Advanced Explorer")
+    _pre_revenue = _ev(p.stage) in ("Early Exploration", "Advanced Explorer")
     if _pre_revenue:
         lines.append("  N/A for pre-revenue company at this stage.")
         if report.profitability and report.profitability.netback_per_boe is not None:

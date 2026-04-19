@@ -63,7 +63,7 @@ ICON_VALUATION = "\U0001f4b0"  # money bag
 ICON_PROFIT = "\U0001f4c8"     # chart increasing
 ICON_SOLVENCY = "\U0001f3e6"   # bank
 ICON_GROWTH = "\U0001f680"     # rocket
-ICON_MINING = "\u26cf"         # pickaxe
+ICON_ENERGY = "\u26a1"         # lightning bolt
 ICON_SHARES = "\U0001f4ca"     # bar chart
 ICON_VALUE = "\U0001f4a1"      # light bulb
 ICON_FINANCE = "\U0001f4ca"    # bar chart
@@ -1671,7 +1671,7 @@ class LynxEnergyGUI:
             return
         card = CollapsibleCard(
             self.scroll_frame, "Energy Quality Indicators",
-            icon=ICON_MINING, accent=YELLOW, expanded=False,
+            icon=ICON_ENERGY, accent=YELLOW, expanded=False,
             info_command=lambda: self._show_section_info("energy_quality"),
         )
         self._sections.append(card)

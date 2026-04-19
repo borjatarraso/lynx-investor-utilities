@@ -1,6 +1,6 @@
 """Lynx Energy — Fundamental analysis for oil & gas, uranium, coal & energy companies."""
 
-__version__ = "0.1"
+__version__ = "0.2"
 __author__ = "Borja Tarraso"
 __author_email__ = "borja.tarraso@member.fsf.org"
 __year__ = "2026"

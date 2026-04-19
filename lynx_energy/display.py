@@ -337,10 +337,12 @@ def _a_target_upside(val):
     return f"[red]Below target ({pct:.0f}%)[/]"
 
 def _a_short_pct(val):
+    """Assess short % of float. val is a ratio (e.g. 0.05 = 5%)."""
     if val is None: return ""
-    if val > 20: return "[bold red]Very high short interest — extreme negative sentiment or squeeze setup[/]"
-    if val > 10: return "[red]Elevated — significant bearish positioning[/]"
-    if val > 5: return "[yellow]Moderate short interest[/]"
+    pct = val * 100
+    if pct > 20: return "[bold red]Very high short interest — extreme negative sentiment or squeeze setup[/]"
+    if pct > 10: return "[red]Elevated — significant bearish positioning[/]"
+    if pct > 5: return "[yellow]Moderate short interest[/]"
     return "[dim]Normal levels[/]"
 
 def _a_days_to_cover(val):
@@ -1412,10 +1414,6 @@ def _display_screening(c):
         "tier_1_2_jurisdiction": "Tier 1/2 Jurisdiction",
         "cash_backing": "Cash Backing >30%",
         "has_revenue": "Has Revenue (Producers)",
-        "positive_fcf": "Positive Free Cash Flow",
-        "book_value_growing": "Book Value Growing",
-        "reasonable_valuation": "Reasonable Valuation (P/B < 3)",
-        "institutional_interest": "Institutional Interest >5%",
     }
 
     t = Table(title="Energy Screening Checklist", border_style="cyan")
@@ -1506,7 +1504,7 @@ def _display_market_intelligence(report):
         t.add_column("Value", min_width=14, no_wrap=True)
         t.add_column("Assessment", ratio=1, overflow="fold")
         t.add_row("  Shares Short", fmt_shares(mi.shares_short), "")
-        t.add_row("  Short % of Float", fmt_pct(mi.short_pct_of_float / 100) if mi.short_pct_of_float else "[dim]N/A[/]",
+        t.add_row("  Short % of Float", fmt_pct(mi.short_pct_of_float) if mi.short_pct_of_float else "[dim]N/A[/]",
                    _a_short_pct(mi.short_pct_of_float))
         t.add_row("  Days to Cover", f"{mi.short_ratio_days:.1f}" if mi.short_ratio_days else "[dim]N/A[/]",
                    _a_days_to_cover(mi.short_ratio_days))
@@ -1525,7 +1523,7 @@ def _display_market_intelligence(report):
     if mi.price_52w_high:
         t.add_row("  52-Week High", f"${mi.price_52w_high:.2f}", f"{mi.pct_from_52w_high*100:.1f}% from high" if mi.pct_from_52w_high else "")
     if mi.price_52w_low:
-        t.add_row("  52-Week Low", f"${mi.price_52w_low:.2f}", f"+{mi.pct_from_52w_low*100:.1f}% from low" if mi.pct_from_52w_low else "")
+        t.add_row("  52-Week Low", f"${mi.price_52w_low:.2f}", f"{mi.pct_from_52w_low*100:+.1f}% from low" if mi.pct_from_52w_low else "")
     if mi.price_52w_range_position is not None:
         pos = mi.price_52w_range_position
         bar = _range_bar(pos)
