@@ -130,7 +130,6 @@ def run_interactive():
                     console.print()
                 else:
                     console.print(f"[bold red]Error:[/] {type(e).__name__}: {e}")
-            except Exception as e: console.print(f"[bold red]Error:[/] {type(e).__name__}: {e}")
         elif cmd == "metrics":
             if current_report: display_full_report(current_report)
             else: console.print("[yellow]No analysis loaded.[/]")

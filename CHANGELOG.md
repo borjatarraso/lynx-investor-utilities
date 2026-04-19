@@ -2,6 +2,45 @@
 
 All notable changes to Lynx Energy Analysis are documented here.
 
+## [0.5] - 2026-04-19
+
+### Fixed (30+ bugs from deep audit)
+
+**Critical / High:**
+- **Profitability table crash**: Pre-revenue companies (Explorer/Grassroots) caused a Rich `MissingColumn` crash — table had 4 columns but the N/A row only passed 3 values
+- **FCF yield only calculated for positive FCF**: Negative FCF (cash burn) was silently dropped, preventing scoring of cash-burning companies. Now negative yields are calculated and scored
+- **Altman Z-Score explosion**: When `total_liabilities` was 0, the formula defaulted to dividing by 1, producing astronomical Z-scores. Now skips Z-Score when liabilities data is missing
+- **Negative D/E rewarded as strength**: A negative debt-to-equity ratio (meaning negative equity/insolvency) was given +15 bonus points. Now only zero debt gets the bonus; negative D/E gets no reward
+- **Conservative balance sheet false positive**: Companies with negative equity (D/E < 0) were listed as a "strength". Now requires `0 <= D/E < 0.2`
+- **News RSS search used "mining stock"**: Google News queries returned irrelevant mining results for energy companies. Changed to "energy stock"
+- **EDGAR User-Agent said "LynxMining"**: SEC EDGAR requests used wrong product identifier, risking request blocks
+
+**Medium:**
+- **OCF/Net Income ratio distorted**: `abs()` on denominator made loss-making companies appear to have high earnings quality. Now only calculated when net income > 0
+- **Burn rate required 2 financial statements**: Companies with only 1 year of data couldn't get burn rate calculated. Removed artificial requirement
+- **Projected dilution was 2-year rate labeled as annual**: `projected_dilution_annual_pct` stored total 2-year dilution, not annual. Now divides by 2
+- **P/Tangible Book not computed for Mid Cap**: The tier gate excluded MID tier despite relevance system marking it as RELEVANT. Added MID to computation scope
+- **Ticker error message suggested mining tickers**: OCO.V, FUU.V, UUUU examples replaced with energy tickers (XOM, OVV, CVE.TO)
+- **9 GUI metric keys empty**: Solvency, growth, and share structure rows bypassed relevance filtering. All keys populated
+- **GUI share structure info buttons disabled**: `metric_key=""` hardcoded; changed to pass actual key
+- **GUI thread safety**: tkinter BooleanVars read from background thread; now read on main thread before spawning worker
+- **GUI macOS mouse wheel**: `e.delta // 120` produced 0 on macOS; now platform-detected
+- **Duplicate except clause in interactive mode**: Unreachable `except Exception` dead code removed
+
+**Low (truthiness bugs — 0.0 treated as "no data"):**
+- `cash_runway_years = 0.0` showed "N/A" instead of "0.0 years" (hid critical data)
+- `cash_per_share = 0.0` showed "N/A" instead of "$0.00"
+- `insider_ownership_pct = 0.0` showed "N/A" instead of "0.00%"
+- `institutional_ownership_pct = 0.0` showed "N/A"
+- `pct_from_52w_high = 0.0` showed empty string
+- `institutions_pct = 0.0` hid the percentage display
+- `current_price = 0.0` showed "N/A" in intrinsic value table
+- All fixed to use `is not None` checks
+
+### Changed
+- Version bumped to 0.5
+- Total: 173 tests passing
+
 ## [0.4] - 2026-04-19
 
 ### Added

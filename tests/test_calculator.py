@@ -160,9 +160,9 @@ class TestNewEnergyMetrics:
 
     def test_fcf_yield_calculated(self, sample_info, sample_statements):
         v = calc_valuation(sample_info, sample_statements, CompanyTier.MID, CompanyStage.PRODUCER)
-        # FCF yield should be calculated when FCF > 0 and EV > 0
+        # FCF yield should be calculated when FCF and EV are available (can be negative)
         if v.fcf_yield is not None:
-            assert 0 < v.fcf_yield < 1
+            assert -1 < v.fcf_yield < 1
 
     def test_croci_calculated(self, sample_info, sample_statements):
         p = calc_profitability(sample_info, sample_statements, CompanyTier.MID, CompanyStage.PRODUCER)

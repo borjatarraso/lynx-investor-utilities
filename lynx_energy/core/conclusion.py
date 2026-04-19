@@ -151,11 +151,11 @@ def _score_solvency(r: AnalysisReport) -> float:
     de = _safe(s.debt_to_equity, None)
     if de is not None:
         if stage in (CompanyStage.GRASSROOTS, CompanyStage.EXPLORER):
-            if de < 0: score += 15
+            if de == 0: score += 15
             elif de < 0.1: score += 10
             elif de > 0.5: score -= 20
         else:
-            if de < 0: score += 15
+            if de == 0: score += 15
             elif de < 0.5: score += 10
             elif de > 2: score -= 15
     cr = _safe(s.current_ratio, None)
@@ -319,7 +319,7 @@ def _find_strengths(r: AnalysisReport) -> list[str]:
         runway = _safe(r.solvency.cash_runway_years, None)
         if runway and runway > 3:
             strengths.append(f"Strong cash position ({runway:.1f} years runway)")
-        if _safe(r.solvency.debt_to_equity, None) is not None and r.solvency.debt_to_equity < 0.2:
+        if _safe(r.solvency.debt_to_equity, None) is not None and 0 <= r.solvency.debt_to_equity < 0.2:
             strengths.append("Conservative balance sheet")
     if r.valuation:
         ctm = _safe(r.valuation.cash_to_market_cap, None)

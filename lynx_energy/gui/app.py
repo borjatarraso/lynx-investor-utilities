@@ -527,10 +527,17 @@ class LynxEnergyGUI:
         self.canvas.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
         scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
 
-        # Mouse wheel scrolling (Linux + Windows)
+        # Mouse wheel scrolling (Linux + Windows + macOS)
+        import platform
+        def _on_mousewheel(e):
+            if platform.system() == "Darwin":
+                scroll_amount = -e.delta
+            else:
+                scroll_amount = -1 * (e.delta // 120)
+            self.canvas.yview_scroll(scroll_amount, "units")
         self.canvas.bind_all(
             "<MouseWheel>",
-            lambda e: self.canvas.yview_scroll(-1 * (e.delta // 120), "units"),
+            _on_mousewheel,
         )
         self.canvas.bind_all(
             "<Button-4>",
@@ -595,13 +602,18 @@ class LynxEnergyGUI:
         self.btn_clear.configure(state=tk.DISABLED)
         self.status_var.set(f"Analysing {ticker}...")
 
+        # Read tkinter variables on the main thread for thread safety.
+        refresh = self.var_refresh.get()
+        no_reports = self.var_no_reports.get()
+        no_news = self.var_no_news.get()
+
         # Clear the scroll area NOW on the main thread, before the
         # analysis thread starts.  This prevents a race where progress
         # callbacks fire before _prepare_progressive runs.
         self._prepare_progressive()
 
         thread = threading.Thread(
-            target=self._run_analysis, args=(ticker,), daemon=True,
+            target=self._run_analysis, args=(ticker, refresh, no_reports, no_news), daemon=True,
         )
         thread.start()
 
@@ -978,12 +990,12 @@ class LynxEnergyGUI:
 
     # ---- Analysis -------------------------------------------------------
 
-    def _run_analysis(self, identifier: str) -> None:
+    def _run_analysis(self, identifier: str, refresh: bool, no_reports: bool, no_news: bool) -> None:
         try:
             from lynx_energy.core.analyzer import run_progressive_analysis
             from lynx_energy.core.storage import is_testing
 
-            refresh = self.var_refresh.get() or is_testing()
+            refresh = refresh or is_testing()
 
             def on_progress(stage: str, report: AnalysisReport) -> None:
                 """Dispatch each stage to the UI thread."""
@@ -994,8 +1006,8 @@ class LynxEnergyGUI:
 
             report = run_progressive_analysis(
                 identifier=identifier,
-                download_reports=not self.var_no_reports.get(),
-                download_news=not self.var_no_news.get(),
+                download_reports=not no_reports,
+                download_news=not no_news,
                 max_filings=getattr(self.cli_args, "max_filings", 10),
                 verbose=getattr(self.cli_args, "verbose", False),
                 refresh=refresh,
@@ -1531,14 +1543,14 @@ class LynxEnergyGUI:
             ("Interest Coverage", _num(s.interest_coverage, 1), _thr(s.interest_coverage, [(1, "Cannot cover"), (2, "Tight"), (4, "Adequate"), (8, "Strong")], "Very strong"), "interest_coverage"),
             ("Altman Z-Score", _num(s.altman_z_score), _thr(s.altman_z_score, [(1.81, "Distress"), (2.99, "Grey Zone")], "Safe"), "altman_z_score"),
             ("Cash Burn Rate (/yr)", _money(s.cash_burn_rate), _burn(s.cash_burn_rate), "cash_burn_rate"),
-            ("Burn % of MCap (/yr)", _pct(s.burn_as_pct_of_market_cap), _burn_pct_assessment(s.burn_as_pct_of_market_cap), ""),
+            ("Burn % of MCap (/yr)", _pct(s.burn_as_pct_of_market_cap), _burn_pct_assessment(s.burn_as_pct_of_market_cap), "burn_as_pct_of_market_cap"),
             ("Cash Runway", f"{s.cash_runway_years:.1f} yrs" if s.cash_runway_years is not None else "N/A", "", "cash_runway_years"),
-            ("Working Capital", _money(s.working_capital), "", ""),
-            ("Cash Per Share", f"${s.cash_per_share:.2f}" if s.cash_per_share is not None else "N/A", "", ""),
+            ("Working Capital", _money(s.working_capital), "", "working_capital"),
+            ("Cash Per Share", f"${s.cash_per_share:.2f}" if s.cash_per_share is not None else "N/A", "", "cash_per_share"),
             ("NCAV Per Share", f"${s.ncav_per_share:.4f}" if s.ncav_per_share is not None else "N/A", "", "ncav_per_share"),
-            ("Total Debt", _money(s.total_debt), "", ""),
-            ("Total Cash", _money(s.total_cash), "", ""),
-            ("Net Debt", _money(s.net_debt), "", ""),
+            ("Total Debt", _money(s.total_debt), "", "total_debt"),
+            ("Total Cash", _money(s.total_cash), "", "total_cash"),
+            ("Net Debt", _money(s.net_debt), "", "net_debt"),
         ]
         for i, (label, value, assessment, key) in enumerate(rows):
             self._add_metric_row_rel(frame, i, label, value, assessment,
@@ -1595,10 +1607,10 @@ class LynxEnergyGUI:
             ("Earnings Growth (YoY)", _pct(g.earnings_growth_yoy), _ga(g.earnings_growth_yoy), "earnings_growth_yoy"),
             ("Earnings CAGR (3Y)", _pct(g.earnings_cagr_3y), _ca(g.earnings_cagr_3y), "earnings_cagr_3y"),
             ("Earnings CAGR (5Y)", _pct(g.earnings_cagr_5y), _ca(g.earnings_cagr_5y), "earnings_cagr_5y"),
-            ("FCF Growth (YoY)", _pct(g.fcf_growth_yoy), _ga(g.fcf_growth_yoy), ""),
-            ("Book Value Growth (YoY)", _pct(g.book_value_growth_yoy), _ga(g.book_value_growth_yoy), ""),
+            ("FCF Growth (YoY)", _pct(g.fcf_growth_yoy), _ga(g.fcf_growth_yoy), "fcf_growth_yoy"),
+            ("Book Value Growth (YoY)", _pct(g.book_value_growth_yoy), _ga(g.book_value_growth_yoy), "book_value_growth_yoy"),
             ("Share Dilution (YoY)", _pct(g.shares_growth_yoy), _da(g.shares_growth_yoy), "shares_growth_yoy"),
-            ("Dilution CAGR (3Y)", _pct(g.shares_growth_3y_cagr), _da(g.shares_growth_3y_cagr), ""),
+            ("Dilution CAGR (3Y)", _pct(g.shares_growth_3y_cagr), _da(g.shares_growth_3y_cagr), "shares_growth_3y_cagr"),
             ("Dilution Ratio", _num(g.dilution_ratio), _dr(g.dilution_ratio), ""),
         ]
         for i, (label, value, assessment, key) in enumerate(rows):
@@ -1661,7 +1673,7 @@ class LynxEnergyGUI:
         ]
         for i, (label, value, assessment, key) in enumerate(rows):
             self._add_metric_row_rel(frame, i, label, value, assessment,
-                                     metric_key="", relevance=rel(key) if key else Relevance.RELEVANT)
+                                     metric_key=key, relevance=rel(key) if key else Relevance.RELEVANT)
 
     # ---- Energy Quality --------------------------------------------------
 

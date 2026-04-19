@@ -1251,6 +1251,7 @@ def _display_profitability(report):
             "[dim]--[/]",
             f"[dim]Profitability metrics are not applicable for {stage_name} stage companies. "
             f"Pre-revenue energy companies have no meaningful margins or returns on capital to evaluate.[/]",
+            "",
         )
     else:
         _add_metric_row(t, "ROE", fmt_pct(p.roe),
@@ -1302,14 +1303,14 @@ def _display_solvency(report):
     _add_metric_row(t, "Cash Burn Rate (/yr)", fmt_money(s.cash_burn_rate),
                     _a_burn(s.cash_burn_rate), rel("cash_burn_rate"))
     _add_metric_row(t, "Cash Runway",
-                    f"{s.cash_runway_years:.1f} years" if s.cash_runway_years else "[dim]N/A[/]",
+                    f"{s.cash_runway_years:.1f} years" if s.cash_runway_years is not None else "[dim]N/A[/]",
                     _a_runway(s.cash_runway_years), rel("cash_runway_years"))
     _add_metric_row(t, "Burn % of Mkt Cap", fmt_pct(s.burn_as_pct_of_market_cap),
                     _a_burn_pct(s.burn_as_pct_of_market_cap), rel("burn_as_pct_of_market_cap"))
     _add_metric_row(t, "Working Capital", fmt_money(s.working_capital),
                     _a_wc(s.working_capital), rel("working_capital"))
     _add_metric_row(t, "Cash Per Share",
-                    f"${s.cash_per_share:.2f}" if s.cash_per_share else "[dim]N/A[/]",
+                    f"${s.cash_per_share:.2f}" if s.cash_per_share is not None else "[dim]N/A[/]",
                     _a_cps(s.cash_per_share), rel("cash_per_share"))
     _add_metric_row(t, "NCAV Per Share",
                     f"${s.ncav_per_share:.4f}" if s.ncav_per_share is not None else "[dim]N/A[/]",
@@ -1420,10 +1421,10 @@ def _display_share_structure(report):
                     _a_float(ss.float_shares, ss.shares_outstanding),
                     Relevance.RELEVANT)
     _add_metric_row(t, "Insider Ownership",
-                    fmt_pct(ss.insider_ownership_pct) if ss.insider_ownership_pct else "[dim]N/A[/]",
+                    fmt_pct(ss.insider_ownership_pct) if ss.insider_ownership_pct is not None else "[dim]N/A[/]",
                     _a_insider(ss.insider_ownership_pct), rel("insider_ownership_pct"))
     _add_metric_row(t, "Institutional Ownership",
-                    fmt_pct(ss.institutional_ownership_pct) if ss.institutional_ownership_pct else "[dim]N/A[/]",
+                    fmt_pct(ss.institutional_ownership_pct) if ss.institutional_ownership_pct is not None else "[dim]N/A[/]",
                     _a_inst(ss.institutional_ownership_pct), rel("institutional_ownership_pct"))
     _add_metric_row(t, "Assessment", ss.share_structure_assessment or "[dim]N/A[/]",
                     _a_ss_assessment(ss.share_structure_assessment), rel("share_structure_assessment"))
@@ -1518,7 +1519,7 @@ def _display_intrinsic_value(report):
     # Current price row
     t.add_row(
         "Current Price",
-        f"${iv.current_price:.2f}" if iv.current_price else "[dim]N/A[/]",
+        f"${iv.current_price:.2f}" if iv.current_price is not None else "[dim]N/A[/]",
         "",
     )
 
@@ -1770,7 +1771,7 @@ def _display_market_intelligence(report):
     if mi.price_current:
         t.add_row("  Current Price", f"${mi.price_current:.2f}", "")
     if mi.price_52w_high:
-        t.add_row("  52-Week High", f"${mi.price_52w_high:.2f}", f"{mi.pct_from_52w_high*100:.1f}% from high" if mi.pct_from_52w_high else "")
+        t.add_row("  52-Week High", f"${mi.price_52w_high:.2f}", f"{mi.pct_from_52w_high*100:.1f}% from high" if mi.pct_from_52w_high is not None else "")
     if mi.price_52w_low:
         t.add_row("  52-Week Low", f"${mi.price_52w_low:.2f}", f"{mi.pct_from_52w_low*100:+.1f}% from low" if mi.pct_from_52w_low else "")
     if mi.price_52w_range_position is not None:
@@ -1811,7 +1812,7 @@ def _display_market_intelligence(report):
 
     # --- Top Institutional Holders ---
     if mi.top_holders:
-        console.print(f"  [dim]Top Holders ({mi.institutions_count or '?'} institutions, {mi.institutions_pct*100:.1f}% held):[/]" if mi.institutions_pct else "  [dim]Top Holders:[/]")
+        console.print(f"  [dim]Top Holders ({mi.institutions_count or '?'} institutions, {mi.institutions_pct*100:.1f}% held):[/]" if mi.institutions_pct is not None else "  [dim]Top Holders:[/]")
         for holder in mi.top_holders[:5]:
             console.print(f"    [dim]{holder}[/]")
 

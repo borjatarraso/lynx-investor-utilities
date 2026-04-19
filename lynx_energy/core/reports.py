@@ -11,8 +11,8 @@ import yfinance as yf
 from lynx_energy.core.storage import get_reports_dir, save_binary, save_json, save_text
 from lynx_energy.models import Filing
 
-DOWNLOAD_HEADERS = {"User-Agent": "Mozilla/5.0 (compatible; LynxMining/0.1)", "Accept-Encoding": "gzip, deflate"}
-EDGAR_HEADERS = {"User-Agent": "LynxMining/0.1 lynx-energy-research@example.com", "Accept-Encoding": "gzip, deflate"}
+DOWNLOAD_HEADERS = {"User-Agent": "Mozilla/5.0 (compatible; LynxEnergy/0.1)", "Accept-Encoding": "gzip, deflate"}
+EDGAR_HEADERS = {"User-Agent": "LynxEnergy/0.1 lynx-energy-research@example.com", "Accept-Encoding": "gzip, deflate"}
 EDGAR_BASE = "https://data.sec.gov"
 TARGET_FORMS = {"10-K", "10-Q", "20-F", "6-K", "8-K", "10-K/A", "10-Q/A"}
 

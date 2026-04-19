@@ -1,4 +1,4 @@
-"""News fetching for mining companies."""
+"""News fetching for energy companies."""
 
 from __future__ import annotations
 
@@ -45,7 +45,7 @@ def fetch_news_yfinance(ticker: str) -> list[NewsArticle]:
 
 
 def fetch_news_rss(company_name: str, ticker: str) -> list[NewsArticle]:
-    query = f"{company_name} {ticker} mining stock"
+    query = f"{company_name} {ticker} energy stock"
     feed_url = f"https://news.google.com/rss/search?q={query.replace(' ', '+')}&hl=en&gl=US&ceid=US:en"
     articles: list[NewsArticle] = []
     try:
@@ -87,7 +87,7 @@ def download_article(ticker: str, article: NewsArticle) -> Optional[str]:
     safe_title = "".join(c if c.isalnum() or c in " -_" else "" for c in article.title)[:60].strip()
     path = ndir / f"{safe_title}.txt"
     try:
-        resp = requests.get(article.url, timeout=15, headers={"User-Agent": "Mozilla/5.0 (compatible; LynxMining/0.1)"})
+        resp = requests.get(article.url, timeout=15, headers={"User-Agent": "Mozilla/5.0 (compatible; LynxEnergy/0.1)"})
         resp.raise_for_status()
         from bs4 import BeautifulSoup
         soup = BeautifulSoup(resp.text, "html.parser")

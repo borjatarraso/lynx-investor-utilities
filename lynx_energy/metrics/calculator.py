@@ -47,7 +47,7 @@ def calc_valuation(
         if latest.free_cash_flow and latest.free_cash_flow > 0:
             v.p_fcf = (price * shares) / latest.free_cash_flow
 
-    if tier in (CompanyTier.MICRO, CompanyTier.NANO, CompanyTier.SMALL) and statements:
+    if tier in (CompanyTier.MICRO, CompanyTier.NANO, CompanyTier.SMALL, CompanyTier.MID) and statements:
         latest = statements[0]
         if latest.total_equity and latest.total_assets and price and shares:
             tbv = latest.total_equity
@@ -68,7 +68,7 @@ def calc_valuation(
     # FCF Yield (FCF / Enterprise Value)
     if statements and v.enterprise_value and v.enterprise_value > 0:
         latest = statements[0]
-        if latest.free_cash_flow and latest.free_cash_flow > 0:
+        if latest.free_cash_flow is not None:
             v.fcf_yield = latest.free_cash_flow / v.enterprise_value
 
     return v
@@ -104,8 +104,8 @@ def calc_profitability(
                 p.croci = s.operating_cash_flow / invested
 
         # Operating Cash Flow to Net Income ratio (earnings quality)
-        if s.operating_cash_flow and s.net_income and s.net_income != 0:
-            p.ocf_to_net_income = s.operating_cash_flow / abs(s.net_income)
+        if s.operating_cash_flow and s.net_income and s.net_income > 0:
+            p.ocf_to_net_income = s.operating_cash_flow / s.net_income
 
     return p
 
@@ -150,11 +150,14 @@ def calc_solvency(
             re = (st.total_equity or 0) * 0.5
             ebit = st.operating_income or 0
             mcap = info.get("marketCap", 0)
-            tl = st.total_liabilities or 1
-            rev = st.revenue or 0
-            z = (1.2 * wc / ta + 1.4 * re / ta + 3.3 * ebit / ta +
-                 0.6 * mcap / tl + 1.0 * rev / ta)
-            s.altman_z_score = round(z, 2)
+            tl = st.total_liabilities or 0
+            if tl <= 0:
+                s.altman_z_score = None
+            else:
+                rev = st.revenue or 0
+                z = (1.2 * wc / ta + 1.4 * re / ta + 3.3 * ebit / ta +
+                     0.6 * mcap / tl + 1.0 * rev / ta)
+                s.altman_z_score = round(z, 2)
 
         if st.current_assets is not None and st.current_liabilities is not None:
             s.working_capital = st.current_assets - st.current_liabilities
@@ -170,7 +173,7 @@ def calc_solvency(
             if shares and shares > 0:
                 s.ncav_per_share = s.ncav / shares
 
-        if len(statements) >= 2 and st.operating_cash_flow is not None:
+        if st.operating_cash_flow is not None:
             ocf = st.operating_cash_flow
             if ocf < 0:
                 s.cash_burn_rate = ocf
@@ -804,7 +807,7 @@ def calc_market_intelligence(
         if runway is not None and runway < 3 and burn is not None and burn < 0:
             if price and price > 0 and shares_outstanding and shares_outstanding > 0:
                 new_shares = abs(burn) * 2 / price
-                mi.projected_dilution_annual_pct = new_shares / shares_outstanding
+                mi.projected_dilution_annual_pct = (new_shares / 2) / shares_outstanding
                 mi.projected_shares_in_2y = shares_outstanding + new_shares
 
         if runway is not None:

@@ -79,10 +79,10 @@ def resolve_identifier(identifier: str) -> tuple[str, str | None]:
     raise ValueError(
         f"Could not find any company matching '{raw}'.\n"
         "Tips:\n"
-        "  - For TSXV stocks, try: OCO.V, FUU.V\n"
-        "  - For TSX stocks, try: DML.TO, NXE.TO\n"
-        "  - For US stocks, try: UUUU, EFR\n"
-        "  - You can also type the full company name: 'Denison Mines'"
+        "  - For TSXV stocks, try: VET.TO, BTE.TO\n"
+        "  - For TSX stocks, try: CVE.TO, ENB.TO\n"
+        "  - For US stocks, try: XOM, OVV, DVN\n"
+        "  - You can also type the full company name: 'Exxon Mobil'"
     )
 
 
