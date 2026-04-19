@@ -50,6 +50,7 @@ class AboutModal(ModalScreen):
             )
             yield VerticalScroll(
                 Static(
+                    f"[bold green]{about['logo']}[/]\n"
                     f"[dim]{about['suite']}[/]\n"
                     f"[dim]Version {about['version']} ({about['year']})[/]\n\n"
                     f"[bold]Developed by:[/] {about['author']}\n"

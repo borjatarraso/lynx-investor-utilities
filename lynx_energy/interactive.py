@@ -54,7 +54,10 @@ MENU = """
 
 
 def run_interactive():
+    from lynx_energy import get_logo_ascii
     from lynx_energy.core.storage import get_mode, is_testing
+    logo = get_logo_ascii()
+    console.print(f"[bold green]{logo}[/]")
     console.print(BANNER)
     mode_panel = "[bold yellow]TESTING MODE[/]\nData in data_test/" if is_testing() else "[bold green]PRODUCTION MODE[/]\nData in data/"
     console.print(Panel(mode_panel, border_style="yellow" if is_testing() else "green"))
