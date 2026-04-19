@@ -134,124 +134,125 @@ def _add_metric_row(table, label, value, assessment, relevance, *, has_assessmen
 
 # ---------------------------------------------------------------------------
 # Assessment functions — all return meaningful text for energy context
+# Severity markers: *CRITICAL*, *WARNING*, *WATCH*, *OK*, *STRONG*
 # ---------------------------------------------------------------------------
 
 def _a_pe(val):
     if _isna(val):
         return "[dim]No earnings data[/]"
     if val < 0:
-        return "[red]Negative earnings — common in pre-production energy companies[/]"
+        return "[red]*WARNING* Negative earnings — common in pre-production energy companies[/]"
     if val < 8:
-        return "[bold green]Deep value — verify earnings are sustainable[/]"
+        return "[bold green]*STRONG* Deep value — verify earnings are sustainable[/]"
     if val < 12:
-        return "[green]Very cheap — typical of cyclical commodity lows[/]"
+        return "[green]*OK* Very cheap — typical of cyclical commodity lows[/]"
     if val < 18:
-        return "[green]Reasonably valued for a producing energy company[/]"
+        return "[green]*OK* Reasonably valued for a producing energy company[/]"
     if val < 25:
-        return "[yellow]Fair — pricing in production growth[/]"
+        return "[yellow]*WATCH* Fair — pricing in production growth[/]"
     if val < 40:
-        return "[#ff8800]Expensive — needs strong production catalysts[/]"
-    return "[red]Very expensive — cycle peak or speculative premium[/]"
+        return "[#ff8800]*WARNING* Expensive — needs strong production catalysts[/]"
+    return "[red]*CRITICAL* Very expensive — cycle peak or speculative premium[/]"
 
 
 def _a_pb(val):
     if _isna(val):
         return "[dim]No book value data[/]"
     if val < 0.5:
-        return "[bold green]Deep discount to assets — check for impairments[/]"
+        return "[bold green]*STRONG* Deep discount to assets — check for impairments[/]"
     if val < 1.0:
-        return "[green]Below book — potential asset value play[/]"
+        return "[green]*OK* Below book — potential asset value play[/]"
     if val < 1.5:
-        return "[green]Near book value — reasonable for energy companies[/]"
+        return "[green]*OK* Near book value — reasonable for energy companies[/]"
     if val < 2.5:
-        return "[yellow]Above book — market pricing in resource upside[/]"
+        return "[yellow]*WATCH* Above book — market pricing in resource upside[/]"
     if val < 4.0:
-        return "[#ff8800]Premium to assets — needs exceptional resources[/]"
-    return "[red]High premium — speculative or trophy asset pricing[/]"
+        return "[#ff8800]*WARNING* Premium to assets — needs exceptional resources[/]"
+    return "[red]*CRITICAL* High premium — speculative or trophy asset pricing[/]"
 
 
 def _a_ps(val):
     if _isna(val):
         return "[dim]No revenue — pre-production stage[/]"
     if val < 1.0:
-        return "[bold green]Very cheap on revenue basis[/]"
+        return "[bold green]*STRONG* Very cheap on revenue basis[/]"
     if val < 2.0:
-        return "[green]Cheap — typical of mature commodity producers[/]"
+        return "[green]*OK* Cheap — typical of mature commodity producers[/]"
     if val < 4.0:
-        return "[yellow]Fair for a growing producer[/]"
+        return "[yellow]*WATCH* Fair for a growing producer[/]"
     if val < 8.0:
-        return "[#ff8800]Rich — needs margin expansion to justify[/]"
-    return "[red]Very expensive on revenue basis[/]"
+        return "[#ff8800]*WARNING* Rich — needs margin expansion to justify[/]"
+    return "[red]*CRITICAL* Very expensive on revenue basis[/]"
 
 
 def _a_pfcf(val):
     if _isna(val):
         return "[dim]No FCF — pre-production or capex heavy[/]"
     if val < 0:
-        return "[red]Negative FCF — burning cash or heavy capex cycle[/]"
+        return "[red]*CRITICAL* Negative FCF — burning cash or heavy capex cycle[/]"
     if val < 8:
-        return "[bold green]Strong FCF yield — cash-generative energy company[/]"
+        return "[bold green]*STRONG* Strong FCF yield — cash-generative energy company[/]"
     if val < 15:
-        return "[green]Good FCF generation[/]"
+        return "[green]*OK* Good FCF generation[/]"
     if val < 25:
-        return "[yellow]Moderate — reinvesting heavily[/]"
-    return "[#ff8800]Low FCF yield relative to price[/]"
+        return "[yellow]*WATCH* Moderate — reinvesting heavily[/]"
+    return "[#ff8800]*WARNING* Low FCF yield relative to price[/]"
 
 
 def _a_ev(val):
     if _isna(val):
         return "[dim]Insufficient data for EV/EBITDA[/]"
     if val < 0:
-        return "[red]Negative EBITDA — operational losses[/]"
+        return "[red]*CRITICAL* Negative EBITDA — operational losses[/]"
     if val < 4:
-        return "[bold green]Very cheap — verify EBITDA sustainability[/]"
+        return "[bold green]*STRONG* Very cheap — verify EBITDA sustainability[/]"
     if val < 6:
-        return "[green]Cheap for a producing energy company[/]"
+        return "[green]*OK* Cheap for a producing energy company[/]"
     if val < 9:
-        return "[yellow]Fair — mid-cycle valuation[/]"
+        return "[yellow]*WATCH* Fair — mid-cycle valuation[/]"
     if val < 14:
-        return "[#ff8800]Rich — pricing in growth or cycle upturn[/]"
-    return "[red]Very expensive — peak cycle risk[/]"
+        return "[#ff8800]*WARNING* Rich — pricing in growth or cycle upturn[/]"
+    return "[red]*CRITICAL* Very expensive — peak cycle risk[/]"
 
 
 def _a_evrev(val):
     if _isna(val):
         return "[dim]No revenue for EV/Revenue[/]"
     if val < 1.5:
-        return "[green]Low EV/Revenue — value territory[/]"
+        return "[green]*OK* Low EV/Revenue — value territory[/]"
     if val < 3.0:
-        return "[yellow]Fair for energy[/]"
+        return "[yellow]*WATCH* Fair for energy[/]"
     if val < 6.0:
-        return "[#ff8800]Elevated — needs high margins[/]"
-    return "[red]Very high — speculative premium[/]"
+        return "[#ff8800]*WARNING* Elevated — needs high margins[/]"
+    return "[red]*CRITICAL* Very high — speculative premium[/]"
 
 
 def _a_peg(val):
     if _isna(val):
         return "[dim]No PEG data — growth/earnings unavailable[/]"
     if val < 0:
-        return "[red]Negative — declining earnings[/]"
+        return "[red]*CRITICAL* Negative — declining earnings[/]"
     if val < 0.5:
-        return "[bold green]Attractive growth-adjusted value[/]"
+        return "[bold green]*STRONG* Attractive growth-adjusted value[/]"
     if val < 1.0:
-        return "[green]Fair growth-adjusted valuation[/]"
+        return "[green]*OK* Fair growth-adjusted valuation[/]"
     if val < 2.0:
-        return "[yellow]Paying up for growth[/]"
-    return "[#ff8800]Expensive relative to growth rate[/]"
+        return "[yellow]*WATCH* Paying up for growth[/]"
+    return "[#ff8800]*WARNING* Expensive relative to growth rate[/]"
 
 
 def _a_ey(val):
     if _isna(val):
         return "[dim]No earnings yield data[/]"
     if val > 0.12:
-        return "[bold green]High yield — deep value if sustainable[/]"
+        return "[bold green]*STRONG* High yield — deep value if sustainable[/]"
     if val > 0.08:
-        return "[green]Attractive earnings yield[/]"
+        return "[green]*OK* Attractive earnings yield[/]"
     if val > 0.05:
-        return "[yellow]Moderate yield[/]"
+        return "[yellow]*WATCH* Moderate yield[/]"
     if val > 0:
-        return "[#ff8800]Low yield — priced for growth[/]"
-    return "[red]Negative yield — no earnings[/]"
+        return "[#ff8800]*WARNING* Low yield — priced for growth[/]"
+    return "[red]*CRITICAL* Negative yield — no earnings[/]"
 
 
 def _a_divy(val):
@@ -260,11 +261,11 @@ def _a_divy(val):
     if val == 0:
         return "[dim]No dividend paid[/]"
     if val > 0.06:
-        return "[bold green]High yield — verify sustainability with FCF[/]"
+        return "[bold green]*STRONG* High yield — verify sustainability with FCF[/]"
     if val > 0.03:
-        return "[green]Solid yield for an energy company[/]"
+        return "[green]*OK* Solid yield for an energy company[/]"
     if val > 0.01:
-        return "[yellow]Modest yield — signal of cash generation[/]"
+        return "[yellow]*WATCH* Modest yield — signal of cash generation[/]"
     return "[dim]Token dividend[/]"
 
 
@@ -272,12 +273,12 @@ def _a_ptb(val):
     if _isna(val):
         return "[dim]No tangible book data[/]"
     if val < 0.5:
-        return "[bold green]Deep discount to tangible assets[/]"
+        return "[bold green]*STRONG* Deep discount to tangible assets[/]"
     if val < 1.0:
-        return "[green]Below tangible book — asset-backed value[/]"
+        return "[green]*OK* Below tangible book — asset-backed value[/]"
     if val < 2.0:
-        return "[yellow]Above tangible book[/]"
-    return "[#ff8800]High premium to tangible assets[/]"
+        return "[yellow]*WATCH* Above tangible book[/]"
+    return "[#ff8800]*WARNING* High premium to tangible assets[/]"
 
 
 def _a_pncav(val):
@@ -286,11 +287,11 @@ def _a_pncav(val):
     if val < 0:
         return "[dim]Negative NCAV — liabilities exceed current assets[/]"
     if val < 0.67:
-        return "[bold green]Graham net-net — trading below liquidation value[/]"
+        return "[bold green]*STRONG* Graham net-net — trading below liquidation value[/]"
     if val < 1.0:
-        return "[green]Below NCAV — potential deep value[/]"
+        return "[green]*OK* Below NCAV — potential deep value[/]"
     if val < 1.5:
-        return "[yellow]Near NCAV[/]"
+        return "[yellow]*WATCH* Near NCAV[/]"
     return "[dim]Above NCAV — not a net-net[/]"
 
 
@@ -298,16 +299,16 @@ def _a_ctm(val):
     if _isna(val):
         return "[dim]No cash/market cap data[/]"
     if val > 0.60:
-        return "[bold green]Near cash-shell — strong downside protection[/]"
+        return "[bold green]*STRONG* Near cash-shell — strong downside protection[/]"
     if val > 0.40:
-        return "[bold green]High cash backing — significant floor[/]"
+        return "[bold green]*STRONG* High cash backing — significant floor[/]"
     if val > 0.25:
-        return "[green]Good cash backing relative to market cap[/]"
+        return "[green]*OK* Good cash backing relative to market cap[/]"
     if val > 0.15:
-        return "[yellow]Moderate cash position[/]"
+        return "[yellow]*WATCH* Moderate cash position[/]"
     if val > 0.05:
-        return "[#ff8800]Low cash backing — financing risk for explorers[/]"
-    return "[red]Minimal cash — fundraising likely imminent[/]"
+        return "[#ff8800]*WARNING* Low cash backing — financing risk for explorers[/]"
+    return "[red]*CRITICAL* Minimal cash — fundraising likely imminent[/]"
 
 
 # --- Market intelligence assessments ---
@@ -315,50 +316,50 @@ def _a_ctm(val):
 def _a_recommendation(val):
     if not val: return ""
     v = val.lower()
-    if "strong_buy" in v: return "[bold green]Strong consensus — high conviction[/]"
-    if "buy" in v: return "[green]Positive consensus[/]"
-    if "hold" in v: return "[yellow]Neutral consensus[/]"
-    if "sell" in v: return "[red]Negative consensus[/]"
+    if "strong_buy" in v: return "[bold green]*STRONG* Strong consensus — high conviction[/]"
+    if "buy" in v: return "[green]*OK* Positive consensus[/]"
+    if "hold" in v: return "[yellow]*WATCH* Neutral consensus[/]"
+    if "sell" in v: return "[red]*WARNING* Negative consensus[/]"
     return ""
 
 def _a_analyst_count(val):
     if val is None: return ""
-    if val >= 10: return "[green]Well covered[/]"
-    if val >= 5: return "[green]Moderate coverage[/]"
-    if val >= 2: return "[yellow]Light coverage[/]"
+    if val >= 10: return "[green]*OK* Well covered[/]"
+    if val >= 5: return "[green]*OK* Moderate coverage[/]"
+    if val >= 2: return "[yellow]*WATCH* Light coverage[/]"
     return "[dim]Minimal coverage — higher information asymmetry[/]"
 
 def _a_target_upside(val):
     if val is None: return ""
     pct = val * 100
-    if pct > 50: return f"[bold green]Significant upside potential ({pct:.0f}%)[/]"
-    if pct > 20: return f"[green]Good upside ({pct:.0f}%)[/]"
-    if pct > 0: return f"[yellow]Modest upside ({pct:.0f}%)[/]"
-    return f"[red]Below target ({pct:.0f}%)[/]"
+    if pct > 50: return f"[bold green]*STRONG* Significant upside potential ({pct:.0f}%)[/]"
+    if pct > 20: return f"[green]*OK* Good upside ({pct:.0f}%)[/]"
+    if pct > 0: return f"[yellow]*WATCH* Modest upside ({pct:.0f}%)[/]"
+    return f"[red]*WARNING* Below target ({pct:.0f}%)[/]"
 
 def _a_short_pct(val):
     """Assess short % of float. val is a ratio (e.g. 0.05 = 5%)."""
     if val is None: return ""
     pct = val * 100
-    if pct > 20: return "[bold red]Very high short interest — extreme negative sentiment or squeeze setup[/]"
-    if pct > 10: return "[red]Elevated — significant bearish positioning[/]"
-    if pct > 5: return "[yellow]Moderate short interest[/]"
-    return "[dim]Normal levels[/]"
+    if pct > 20: return "[bold red]*CRITICAL* Very high short interest — extreme negative sentiment or squeeze setup[/]"
+    if pct > 10: return "[red]*WARNING* Elevated — significant bearish positioning[/]"
+    if pct > 5: return "[yellow]*WATCH* Moderate short interest[/]"
+    return "[green]*OK* Normal levels[/]"
 
 def _a_days_to_cover(val):
     if val is None: return ""
-    if val > 10: return "[bold red]Very high days to cover — potential short squeeze[/]"
-    if val > 5: return "[yellow]Elevated — shorts may be trapped[/]"
-    return "[dim]Normal[/]"
+    if val > 10: return "[bold red]*CRITICAL* Very high days to cover — potential short squeeze[/]"
+    if val > 5: return "[yellow]*WATCH* Elevated — shorts may be trapped[/]"
+    return "[dim]*OK* Normal[/]"
 
 def _a_beta(val):
     if val is None: return ""
-    if val > 2.5: return "[bold red]Extreme volatility — price swings 2.5x+ market moves[/]"
-    if val > 2.0: return "[red]High volatility — expect large price swings[/]"
-    if val > 1.5: return "[yellow]Above-average volatility[/]"
+    if val > 2.5: return "[bold red]*CRITICAL* Extreme volatility — price swings 2.5x+ market moves[/]"
+    if val > 2.0: return "[red]*WARNING* High volatility — expect large price swings[/]"
+    if val > 1.5: return "[yellow]*WATCH* Above-average volatility[/]"
     if val > 1.0: return "[dim]Moderate — moves with market[/]"
-    if val > 0.5: return "[green]Low volatility — defensive[/]"
-    return "[green]Very low beta — minimal market correlation[/]"
+    if val > 0.5: return "[green]*OK* Low volatility — defensive[/]"
+    return "[green]*OK* Very low beta — minimal market correlation[/]"
 
 def _range_bar(position):
     """Visual bar showing where price is in 52-week range."""
@@ -377,118 +378,118 @@ def _a_roe(val):
     if _isna(val):
         return "[dim]No ROE data — pre-earnings stage[/]"
     if val < -0.20:
-        return "[red]Deeply negative ROE — significant losses[/]"
+        return "[red]*CRITICAL* Deeply negative ROE — significant losses[/]"
     if val < 0:
-        return "[#ff8800]Negative ROE — unprofitable period[/]"
+        return "[#ff8800]*WARNING* Negative ROE — unprofitable period[/]"
     if val < 0.05:
-        return "[yellow]Low ROE — below cost of equity[/]"
+        return "[yellow]*WATCH* Low ROE — below cost of equity[/]"
     if val < 0.12:
-        return "[green]Adequate ROE for a cyclical energy company[/]"
+        return "[green]*OK* Adequate ROE for a cyclical energy company[/]"
     if val < 0.20:
-        return "[green]Strong ROE — efficient capital deployment[/]"
-    return "[bold green]Exceptional ROE — verify sustainability[/]"
+        return "[green]*OK* Strong ROE — efficient capital deployment[/]"
+    return "[bold green]*STRONG* Exceptional ROE — verify sustainability[/]"
 
 
 def _a_roa(val):
     if _isna(val):
         return "[dim]No ROA data[/]"
     if val < -0.10:
-        return "[red]Deeply negative — asset base eroding[/]"
+        return "[red]*CRITICAL* Deeply negative — asset base eroding[/]"
     if val < 0:
-        return "[#ff8800]Negative ROA — not generating returns on assets[/]"
+        return "[#ff8800]*WARNING* Negative ROA — not generating returns on assets[/]"
     if val < 0.03:
-        return "[yellow]Low ROA — asset-heavy industry typical[/]"
+        return "[yellow]*WATCH* Low ROA — asset-heavy industry typical[/]"
     if val < 0.08:
-        return "[green]Good ROA for capital-intensive energy[/]"
-    return "[bold green]Excellent asset efficiency[/]"
+        return "[green]*OK* Good ROA for capital-intensive energy[/]"
+    return "[bold green]*STRONG* Excellent asset efficiency[/]"
 
 
 def _a_roic(val):
     if _isna(val):
         return "[dim]No ROIC data — pre-production or insufficient data[/]"
     if val < -0.10:
-        return "[red]Deeply negative — destroying capital[/]"
+        return "[red]*CRITICAL* Deeply negative — destroying capital[/]"
     if val < 0:
-        return "[#ff8800]Negative ROIC — below cost of capital[/]"
+        return "[#ff8800]*WARNING* Negative ROIC — below cost of capital[/]"
     if val < 0.06:
-        return "[yellow]Below WACC — marginal capital allocation[/]"
+        return "[yellow]*WATCH* Below WACC — marginal capital allocation[/]"
     if val < 0.12:
-        return "[green]ROIC above typical WACC — value creation[/]"
+        return "[green]*OK* ROIC above typical WACC — value creation[/]"
     if val < 0.20:
-        return "[green]Strong ROIC — high-quality operations[/]"
-    return "[bold green]Exceptional ROIC — world-class asset[/]"
+        return "[green]*OK* Strong ROIC — high-quality operations[/]"
+    return "[bold green]*STRONG* Exceptional ROIC — world-class asset[/]"
 
 
 def _a_gm(val):
     if _isna(val):
         return "[dim]No gross margin — pre-revenue stage[/]"
     if val < 0:
-        return "[bold red]Negative gross margin — selling below cost[/]"
+        return "[bold red]*CRITICAL* Negative gross margin — selling below cost[/]"
     if val < 0.15:
-        return "[red]Very thin — vulnerable to commodity price swings[/]"
+        return "[red]*WARNING* Very thin — vulnerable to commodity price swings[/]"
     if val < 0.25:
-        return "[#ff8800]Below average — high-cost producer[/]"
+        return "[#ff8800]*WARNING* Below average — high-cost producer[/]"
     if val < 0.40:
-        return "[yellow]Adequate gross margin for energy[/]"
+        return "[yellow]*WATCH* Adequate gross margin for energy[/]"
     if val < 0.55:
-        return "[green]Strong margins — low-cost producer[/]"
-    return "[bold green]Exceptional — best-in-class cost structure[/]"
+        return "[green]*OK* Strong margins — low-cost producer[/]"
+    return "[bold green]*STRONG* Exceptional — best-in-class cost structure[/]"
 
 
 def _a_om(val):
     if _isna(val):
         return "[dim]No operating margin data[/]"
     if val < -0.50:
-        return "[red]Heavy operating losses — explorer burn rate[/]"
+        return "[red]*CRITICAL* Heavy operating losses — explorer burn rate[/]"
     if val < 0:
-        return "[#ff8800]Negative — G&A exceeds gross profit[/]"
+        return "[#ff8800]*WARNING* Negative — G&A exceeds gross profit[/]"
     if val < 0.10:
-        return "[yellow]Thin operating margin[/]"
+        return "[yellow]*WATCH* Thin operating margin[/]"
     if val < 0.25:
-        return "[green]Solid operating margin[/]"
-    return "[bold green]High operating leverage — efficient operations[/]"
+        return "[green]*OK* Solid operating margin[/]"
+    return "[bold green]*STRONG* High operating leverage — efficient operations[/]"
 
 
 def _a_nm(val):
     if _isna(val):
         return "[dim]No net margin data[/]"
     if val < -0.50:
-        return "[red]Deep losses — verify cash runway[/]"
+        return "[red]*CRITICAL* Deep losses — verify cash runway[/]"
     if val < 0:
-        return "[#ff8800]Net loss — common for development-stage energy companies[/]"
+        return "[#ff8800]*WARNING* Net loss — common for development-stage energy companies[/]"
     if val < 0.05:
-        return "[yellow]Thin net margin — leverage and tax impact[/]"
+        return "[yellow]*WATCH* Thin net margin — leverage and tax impact[/]"
     if val < 0.15:
-        return "[green]Healthy net margin for an energy company[/]"
-    return "[bold green]Strong profitability — low-cost advantage[/]"
+        return "[green]*OK* Healthy net margin for an energy company[/]"
+    return "[bold green]*STRONG* Strong profitability — low-cost advantage[/]"
 
 
 def _a_fcfm(val):
     if _isna(val):
         return "[dim]No FCF margin — pre-production or capex heavy[/]"
     if val < -0.50:
-        return "[red]Heavy cash outflows — verify funding sources[/]"
+        return "[red]*CRITICAL* Heavy cash outflows — verify funding sources[/]"
     if val < 0:
-        return "[#ff8800]Negative FCF margin — capex cycle or exploration[/]"
+        return "[#ff8800]*WARNING* Negative FCF margin — capex cycle or exploration[/]"
     if val < 0.05:
-        return "[yellow]Minimal FCF generation[/]"
+        return "[yellow]*WATCH* Minimal FCF generation[/]"
     if val < 0.15:
-        return "[green]Solid FCF conversion[/]"
-    return "[bold green]Strong free cash flow margin[/]"
+        return "[green]*OK* Solid FCF conversion[/]"
+    return "[bold green]*STRONG* Strong free cash flow margin[/]"
 
 
 def _a_ebitdam(val):
     if _isna(val):
         return "[dim]No EBITDA margin data[/]"
     if val < 0:
-        return "[red]Negative EBITDA — operational losses[/]"
+        return "[red]*CRITICAL* Negative EBITDA — operational losses[/]"
     if val < 0.15:
-        return "[#ff8800]Low EBITDA margin — high-cost structure[/]"
+        return "[#ff8800]*WARNING* Low EBITDA margin — high-cost structure[/]"
     if val < 0.30:
-        return "[yellow]Moderate EBITDA margin[/]"
+        return "[yellow]*WATCH* Moderate EBITDA margin[/]"
     if val < 0.45:
-        return "[green]Strong EBITDA margin[/]"
-    return "[bold green]Excellent — high operating leverage[/]"
+        return "[green]*OK* Strong EBITDA margin[/]"
+    return "[bold green]*STRONG* Excellent — high operating leverage[/]"
 
 
 # --- Solvency assessments ---
@@ -497,121 +498,121 @@ def _a_de(val):
     if _isna(val):
         return "[dim]No debt/equity data[/]"
     if val < 0:
-        return "[red]Negative equity — liabilities exceed assets[/]"
+        return "[red]*CRITICAL* Negative equity — liabilities exceed assets[/]"
     if val == 0:
-        return "[bold green]No debt — clean balance sheet[/]"
+        return "[bold green]*STRONG* No debt — clean balance sheet[/]"
     if val < 0.20:
-        return "[green]Very low leverage — conservative financing[/]"
+        return "[green]*OK* Very low leverage — conservative financing[/]"
     if val < 0.50:
-        return "[green]Moderate leverage — manageable for energy companies[/]"
+        return "[green]*OK* Moderate leverage — manageable for energy companies[/]"
     if val < 1.00:
-        return "[yellow]Elevated leverage — monitor debt service[/]"
+        return "[yellow]*WATCH* Elevated leverage — monitor debt service[/]"
     if val < 2.00:
-        return "[#ff8800]High leverage — risky for cyclical business[/]"
-    return "[bold red]Very high leverage — distress risk in downturns[/]"
+        return "[#ff8800]*WARNING* High leverage — risky for cyclical business[/]"
+    return "[bold red]*CRITICAL* Very high leverage — distress risk in downturns[/]"
 
 
 def _a_cr(val):
     if _isna(val):
         return "[dim]No current ratio data[/]"
     if val > 5.0:
-        return "[green]Very liquid — may be under-deploying capital[/]"
+        return "[green]*OK* Very liquid — may be under-deploying capital[/]"
     if val > 3.0:
-        return "[green]Very strong liquidity position[/]"
+        return "[green]*OK* Very strong liquidity position[/]"
     if val > 2.0:
-        return "[green]Strong — comfortable short-term coverage[/]"
+        return "[green]*OK* Strong — comfortable short-term coverage[/]"
     if val > 1.5:
-        return "[yellow]Adequate liquidity[/]"
+        return "[yellow]*WATCH* Adequate liquidity[/]"
     if val > 1.0:
-        return "[#ff8800]Tight — short-term obligations near current assets[/]"
-    return "[bold red]Liquidity risk — current liabilities exceed assets[/]"
+        return "[#ff8800]*WARNING* Tight — short-term obligations near current assets[/]"
+    return "[bold red]*CRITICAL* Liquidity risk — current liabilities exceed assets[/]"
 
 
 def _a_qr(val):
     if _isna(val):
         return "[dim]No quick ratio data[/]"
     if val > 3.0:
-        return "[green]Very strong quick ratio[/]"
+        return "[green]*OK* Very strong quick ratio[/]"
     if val > 1.5:
-        return "[green]Good — liquid assets cover near-term obligations[/]"
+        return "[green]*OK* Good — liquid assets cover near-term obligations[/]"
     if val > 1.0:
-        return "[yellow]Adequate without relying on inventory[/]"
+        return "[yellow]*WATCH* Adequate without relying on inventory[/]"
     if val > 0.5:
-        return "[#ff8800]Needs inventory liquidation to meet obligations[/]"
-    return "[red]Weak — immediate liquidity concern[/]"
+        return "[#ff8800]*WARNING* Needs inventory liquidation to meet obligations[/]"
+    return "[red]*CRITICAL* Weak — immediate liquidity concern[/]"
 
 
 def _a_ic(val):
     if _isna(val):
         return "[dim]No interest coverage data[/]"
     if val < 0:
-        return "[red]Negative — not covering interest from operations[/]"
+        return "[red]*CRITICAL* Negative — not covering interest from operations[/]"
     if val < 1.5:
-        return "[bold red]Dangerously low — default risk[/]"
+        return "[bold red]*CRITICAL* Dangerously low — default risk[/]"
     if val < 3.0:
-        return "[#ff8800]Thin coverage — vulnerable in downturns[/]"
+        return "[#ff8800]*WARNING* Thin coverage — vulnerable in downturns[/]"
     if val < 6.0:
-        return "[yellow]Adequate interest coverage[/]"
+        return "[yellow]*WATCH* Adequate interest coverage[/]"
     if val < 12.0:
-        return "[green]Comfortable — well-covered[/]"
-    return "[bold green]Very strong — interest is trivial[/]"
+        return "[green]*OK* Comfortable — well-covered[/]"
+    return "[bold green]*STRONG* Very strong — interest is trivial[/]"
 
 
 def _a_burn(val):
     if _isna(val):
         return "[dim]No burn rate data[/]"
     if val == 0:
-        return "[green]Not burning cash — break-even or profitable[/]"
+        return "[green]*OK* Not burning cash — break-even or profitable[/]"
     if val > 0:
-        return "[green]Cash flow positive — generating cash[/]"
+        return "[green]*OK* Cash flow positive — generating cash[/]"
     abv = abs(val)
     if abv < 2_000_000:
-        return f"[yellow]Modest burn — {fmt_money(abv)}/yr[/]"
+        return f"[yellow]*WATCH* Modest burn — {fmt_money(abv)}/yr[/]"
     if abv < 10_000_000:
-        return f"[#ff8800]Significant burn — {fmt_money(abv)}/yr[/]"
-    return f"[bold red]Heavy burn — {fmt_money(abv)}/yr — financing needed[/]"
+        return f"[#ff8800]*WARNING* Significant burn — {fmt_money(abv)}/yr[/]"
+    return f"[bold red]*CRITICAL* Heavy burn — {fmt_money(abv)}/yr — financing needed[/]"
 
 
 def _a_runway(val):
     if _isna(val):
         return "[dim]No runway data — could be cash-positive[/]"
     if val > 5.0:
-        return "[bold green]Excellent — 5+ years runway, minimal dilution pressure[/]"
+        return "[bold green]*STRONG* Excellent — 5+ years runway, minimal dilution pressure[/]"
     if val > 3.0:
-        return "[green]Comfortable — time to reach milestones[/]"
+        return "[green]*OK* Comfortable — time to reach milestones[/]"
     if val > 1.5:
-        return "[yellow]Adequate — monitor quarterly for changes[/]"
+        return "[yellow]*WATCH* Adequate — monitor quarterly for changes[/]"
     if val > 0.75:
-        return "[#ff8800]Tight — financing discussions likely underway[/]"
+        return "[#ff8800]*WARNING* Tight — financing discussions likely underway[/]"
     if val > 0:
-        return "[bold red]Critical — fundraising imminent, expect dilution[/]"
-    return "[bold red]Cash depleted — emergency funding needed[/]"
+        return "[bold red]*CRITICAL* Critical — fundraising imminent, expect dilution[/]"
+    return "[bold red]*CRITICAL* Cash depleted — emergency funding needed[/]"
 
 
 def _a_burn_pct(val):
     if _isna(val):
         return "[dim]No burn/market cap data[/]"
     if val > 0.15:
-        return "[bold red]Extreme burn >15% of market cap — unsustainable[/]"
+        return "[bold red]*CRITICAL* Extreme burn >15% of market cap — unsustainable[/]"
     if val > 0.08:
-        return "[red]High burn >8% — significant annual value erosion[/]"
+        return "[red]*WARNING* High burn >8% — significant annual value erosion[/]"
     if val > 0.04:
-        return "[yellow]Moderate burn — 4-8% of market cap consumed yearly[/]"
+        return "[yellow]*WATCH* Moderate burn — 4-8% of market cap consumed yearly[/]"
     if val > 0.02:
-        return "[green]Low burn rate relative to market cap[/]"
-    return "[green]Minimal burn — negligible market cap impact[/]"
+        return "[green]*OK* Low burn rate relative to market cap[/]"
+    return "[green]*OK* Minimal burn — negligible market cap impact[/]"
 
 
 def _a_wc(val):
     if _isna(val):
         return "[dim]No working capital data[/]"
     if val < 0:
-        return "[bold red]Negative working capital — near-term funding gap[/]"
+        return "[bold red]*CRITICAL* Negative working capital — near-term funding gap[/]"
     if val < 1_000_000:
-        return "[#ff8800]Thin working capital cushion[/]"
+        return "[#ff8800]*WARNING* Thin working capital cushion[/]"
     if val < 10_000_000:
-        return "[yellow]Moderate working capital[/]"
-    return "[green]Strong working capital position[/]"
+        return "[yellow]*WATCH* Moderate working capital[/]"
+    return "[green]*OK* Strong working capital position[/]"
 
 
 def _a_cps(val):
@@ -624,8 +625,8 @@ def _a_ncavps(val):
     if val is None:
         return "[dim]No NCAV per share data[/]"
     if val < 0:
-        return "[red]Negative NCAV — net liabilities exceed current assets[/]"
-    return f"[cyan]Liquidation floor: ${val:.4f}/share[/]"
+        return "[red]*WARNING* Negative NCAV — net liabilities exceed current assets[/]"
+    return f"[cyan]*OK* Liquidation floor: ${val:.4f}/share[/]"
 
 
 # --- Growth assessments ---
@@ -634,100 +635,100 @@ def _a_revg(val):
     if _isna(val):
         return "[dim]No revenue growth — pre-production stage[/]"
     if val > 0.50:
-        return "[bold green]Exceptional revenue growth >50%[/]"
+        return "[bold green]*STRONG* Exceptional revenue growth >50%[/]"
     if val > 0.20:
-        return "[green]Strong revenue growth[/]"
+        return "[green]*OK* Strong revenue growth[/]"
     if val > 0.05:
-        return "[yellow]Modest growth[/]"
+        return "[yellow]*WATCH* Modest growth[/]"
     if val > -0.05:
         return "[dim]Flat revenue[/]"
     if val > -0.20:
-        return "[#ff8800]Revenue declining — check commodity prices[/]"
-    return "[red]Significant revenue decline[/]"
+        return "[#ff8800]*WARNING* Revenue declining — check commodity prices[/]"
+    return "[red]*CRITICAL* Significant revenue decline[/]"
 
 
 def _a_revcagr(val):
     if _isna(val):
         return "[dim]No 3-year revenue CAGR[/]"
     if val > 0.25:
-        return "[bold green]Strong multi-year revenue CAGR[/]"
+        return "[bold green]*STRONG* Strong multi-year revenue CAGR[/]"
     if val > 0.10:
-        return "[green]Solid revenue growth trajectory[/]"
+        return "[green]*OK* Solid revenue growth trajectory[/]"
     if val > 0:
-        return "[yellow]Modest growth trend[/]"
-    return "[#ff8800]Revenue contracting over 3 years[/]"
+        return "[yellow]*WATCH* Modest growth trend[/]"
+    return "[#ff8800]*WARNING* Revenue contracting over 3 years[/]"
 
 
 def _a_earng(val):
     if _isna(val):
         return "[dim]No earnings growth data[/]"
     if val > 0.50:
-        return "[bold green]Earnings surging — verify sustainability[/]"
+        return "[bold green]*STRONG* Earnings surging — verify sustainability[/]"
     if val > 0.15:
-        return "[green]Strong earnings improvement[/]"
+        return "[green]*OK* Strong earnings improvement[/]"
     if val > 0:
-        return "[yellow]Modest earnings growth[/]"
+        return "[yellow]*WATCH* Modest earnings growth[/]"
     if val > -0.20:
-        return "[#ff8800]Earnings declining[/]"
-    return "[red]Significant earnings deterioration[/]"
+        return "[#ff8800]*WARNING* Earnings declining[/]"
+    return "[red]*CRITICAL* Significant earnings deterioration[/]"
 
 
 def _a_bvg(val):
     if _isna(val):
         return "[dim]No book value growth data[/]"
     if val > 0.15:
-        return "[bold green]Book value growing rapidly — reinvesting well[/]"
+        return "[bold green]*STRONG* Book value growing rapidly — reinvesting well[/]"
     if val > 0.05:
-        return "[green]Book value increasing — capital accumulation[/]"
+        return "[green]*OK* Book value increasing — capital accumulation[/]"
     if val > -0.03:
-        return "[yellow]Book value roughly flat[/]"
+        return "[yellow]*WATCH* Book value roughly flat[/]"
     if val > -0.15:
-        return "[#ff8800]Book value eroding — losses or impairments[/]"
-    return "[red]Significant book value destruction[/]"
+        return "[#ff8800]*WARNING* Book value eroding — losses or impairments[/]"
+    return "[red]*CRITICAL* Significant book value destruction[/]"
 
 
 def _a_fcfg(val):
     if _isna(val):
         return "[dim]No FCF growth data[/]"
     if val > 0.30:
-        return "[bold green]FCF growth accelerating[/]"
+        return "[bold green]*STRONG* FCF growth accelerating[/]"
     if val > 0.10:
-        return "[green]Growing free cash flow[/]"
+        return "[green]*OK* Growing free cash flow[/]"
     if val > -0.10:
-        return "[yellow]FCF roughly stable[/]"
-    return "[#ff8800]FCF declining — capex cycle or margin compression[/]"
+        return "[yellow]*WATCH* FCF roughly stable[/]"
+    return "[#ff8800]*WARNING* FCF declining — capex cycle or margin compression[/]"
 
 
 def _a_dil(val):
     if _isna(val):
         return "[dim]No dilution data[/]"
     if val < -0.05:
-        return "[bold green]Meaningful buybacks — shareholder friendly[/]"
+        return "[bold green]*STRONG* Meaningful buybacks — shareholder friendly[/]"
     if val < -0.01:
-        return "[green]Minor share buybacks[/]"
+        return "[bold green]*STRONG* Minor share buybacks[/]"
     if val < 0.02:
-        return "[green]Minimal dilution — tight share structure[/]"
+        return "[green]*OK* Minimal dilution — tight share structure[/]"
     if val < 0.05:
-        return "[yellow]Modest dilution — typical for funded explorers[/]"
+        return "[yellow]*WATCH* Modest dilution — typical for funded explorers[/]"
     if val < 0.10:
-        return "[#ff8800]Significant dilution (5-10%/yr) — equity raises[/]"
+        return "[#ff8800]*WARNING* Significant dilution (5-10%/yr) — equity raises[/]"
     if val < 0.20:
-        return "[red]Heavy dilution (10-20%/yr) — aggressive financing[/]"
-    return "[bold red]Extreme dilution >20%/yr — value destruction[/]"
+        return "[red]*WARNING* Heavy dilution (10-20%/yr) — aggressive financing[/]"
+    return "[bold red]*CRITICAL* Extreme dilution >20%/yr — value destruction[/]"
 
 
 def _a_dil3y(val):
     if _isna(val):
         return "[dim]No 3-year dilution CAGR[/]"
     if val < 0:
-        return "[green]Share count shrinking — buyback program[/]"
+        return "[green]*OK* Share count shrinking — buyback program[/]"
     if val < 0.03:
-        return "[green]Minimal cumulative dilution over 3 years[/]"
+        return "[green]*OK* Minimal cumulative dilution over 3 years[/]"
     if val < 0.08:
-        return "[yellow]Moderate 3-year dilution — ongoing equity raises[/]"
+        return "[yellow]*WATCH* Moderate 3-year dilution — ongoing equity raises[/]"
     if val < 0.15:
-        return "[#ff8800]High 3-year dilution CAGR — persistent fundraising[/]"
-    return "[bold red]Chronic heavy dilution — structural financing issue[/]"
+        return "[#ff8800]*WARNING* High 3-year dilution CAGR — persistent fundraising[/]"
+    return "[bold red]*CRITICAL* Chronic heavy dilution — structural financing issue[/]"
 
 
 # --- Share structure assessments ---
@@ -736,51 +737,51 @@ def _a_shares_out(val):
     if _isna(val):
         return "[dim]No share count data[/]"
     if val > 1_000_000_000:
-        return "[red]Over 1B shares — heavily diluted, limits upside per share[/]"
+        return "[red]*CRITICAL* Over 1B shares — heavily diluted, limits upside per share[/]"
     if val > 500_000_000:
-        return "[#ff8800]Large float >500M — significant past dilution[/]"
+        return "[#ff8800]*WARNING* Large float >500M — significant past dilution[/]"
     if val > 200_000_000:
-        return "[yellow]Moderate share count[/]"
+        return "[yellow]*WATCH* Moderate share count[/]"
     if val > 50_000_000:
-        return "[green]Reasonable share count — manageable structure[/]"
-    return "[bold green]Tight share count — high torque to price[/]"
+        return "[green]*OK* Reasonable share count — manageable structure[/]"
+    return "[bold green]*STRONG* Tight share count — high torque to price[/]"
 
 
 def _a_fd_shares(val):
     if _isna(val):
         return "[dim]No fully diluted count[/]"
     if val > 1_500_000_000:
-        return "[red]Very high fully diluted count — warrant/option overhang[/]"
+        return "[red]*CRITICAL* Very high fully diluted count — warrant/option overhang[/]"
     if val > 500_000_000:
-        return "[#ff8800]Large diluted count — significant overhang risk[/]"
+        return "[#ff8800]*WARNING* Large diluted count — significant overhang risk[/]"
     if val > 200_000_000:
-        return "[yellow]Moderate diluted share base[/]"
-    return "[green]Tight diluted share base[/]"
+        return "[yellow]*WATCH* Moderate diluted share base[/]"
+    return "[green]*OK* Tight diluted share base[/]"
 
 
 def _a_insider(val):
     if _isna(val):
         return "[dim]No insider ownership data[/]"
     if val > 0.30:
-        return "[bold green]Very high insider ownership — strong alignment[/]"
+        return "[bold green]*STRONG* Very high insider ownership — strong alignment[/]"
     if val > 0.15:
-        return "[green]Solid insider ownership — skin in the game[/]"
+        return "[green]*OK* Solid insider ownership — skin in the game[/]"
     if val > 0.05:
-        return "[yellow]Moderate insider ownership[/]"
+        return "[yellow]*WATCH* Moderate insider ownership[/]"
     if val > 0.01:
-        return "[#ff8800]Low insider ownership — limited alignment[/]"
-    return "[red]Minimal insider ownership — check for pay-to-play[/]"
+        return "[#ff8800]*WARNING* Low insider ownership — limited alignment[/]"
+    return "[red]*CRITICAL* Minimal insider ownership — check for pay-to-play[/]"
 
 
 def _a_inst(val):
     if _isna(val):
         return "[dim]No institutional ownership data[/]"
     if val > 0.60:
-        return "[green]High institutional — validates investment thesis[/]"
+        return "[green]*OK* High institutional — validates investment thesis[/]"
     if val > 0.30:
-        return "[green]Good institutional backing[/]"
+        return "[green]*OK* Good institutional backing[/]"
     if val > 0.10:
-        return "[yellow]Some institutional interest[/]"
+        return "[yellow]*WATCH* Some institutional interest[/]"
     return "[dim]Low institutional — under-followed, potential discovery[/]"
 
 
@@ -788,6 +789,200 @@ def _a_ss_assessment(val):
     if not val:
         return "[dim]No assessment available[/]"
     return val
+
+
+# --- Energy-specific metric assessments ---
+
+def _a_fcf_yield(val):
+    if _isna(val):
+        return "[dim]No FCF yield data[/]"
+    if val > 0.12:
+        return "[bold green]*STRONG* Excellent FCF yield >12% — strong cash generation[/]"
+    if val > 0.08:
+        return "[green]*OK* Good FCF yield 8-12% — solid cash returns[/]"
+    if val > 0.05:
+        return "[yellow]*WATCH* Moderate FCF yield 5-8%[/]"
+    if val > 0.02:
+        return "[#ff8800]*WARNING* Low FCF yield <5% — limited cash return[/]"
+    if val > 0:
+        return "[red]*CRITICAL* Very low FCF yield — reinvesting most cash flow[/]"
+    return "[red]*CRITICAL* Negative FCF yield — cash consuming[/]"
+
+
+def _a_croci(val):
+    if _isna(val):
+        return "[dim]No CROCI data[/]"
+    if val > 0.20:
+        return "[bold green]*STRONG* Exceptional cash returns on capital >20%[/]"
+    if val > 0.12:
+        return "[green]*OK* Good CROCI — generating solid cash returns[/]"
+    if val > 0.06:
+        return "[yellow]*WATCH* Moderate CROCI — near cost of capital[/]"
+    if val > 0:
+        return "[#ff8800]*WARNING* Low CROCI — below cost of capital[/]"
+    return "[red]*CRITICAL* Negative CROCI — destroying cash value[/]"
+
+
+def _a_ocf_ni(val):
+    if _isna(val):
+        return "[dim]No data[/]"
+    if val > 1.5:
+        return "[bold green]*STRONG* Cash flow well exceeds earnings — high quality[/]"
+    if val > 1.0:
+        return "[green]*OK* Cash flow exceeds earnings — good quality[/]"
+    if val > 0.7:
+        return "[yellow]*WATCH* Cash flow slightly below earnings[/]"
+    if val > 0:
+        return "[#ff8800]*WARNING* Earnings exceeding cash flow — check accruals[/]"
+    return "[red]*CRITICAL* Negative OCF despite reported earnings — red flag[/]"
+
+
+def _a_debt_ps(val):
+    if _isna(val):
+        return "[dim]No debt per share data[/]"
+    return f"[cyan]Debt burden: ${val:.2f}/share[/]"
+
+
+def _a_dsc(val):
+    if _isna(val):
+        return "[dim]No debt service data[/]"
+    if val > 8:
+        return "[bold green]*STRONG* Very strong debt service coverage[/]"
+    if val > 4:
+        return "[green]*OK* Comfortable — well covered[/]"
+    if val > 2:
+        return "[yellow]*WATCH* Adequate but monitor[/]"
+    if val > 1:
+        return "[#ff8800]*WARNING* Tight debt service — vulnerable in downturn[/]"
+    return "[red]*CRITICAL* Cannot cover debt service from operations[/]"
+
+
+def _a_capex_rev(val):
+    if _isna(val):
+        return "[dim]No capex/revenue data[/]"
+    if val > 0.50:
+        return "[red]*CRITICAL* Capex >50% of revenue — extreme capital intensity[/]"
+    if val > 0.35:
+        return "[#ff8800]*WARNING* High capex intensity 35-50% — heavy reinvestment[/]"
+    if val > 0.20:
+        return "[yellow]*WATCH* Moderate capex 20-35% — typical for E&P[/]"
+    if val > 0.10:
+        return "[green]*OK* Disciplined capex 10-20%[/]"
+    return "[bold green]*STRONG* Very low capex intensity <10% — capital light[/]"
+
+
+def _a_capex_ocf(val):
+    if _isna(val):
+        return "[dim]No capex/OCF data[/]"
+    if val > 1.0:
+        return "[red]*CRITICAL* Capex exceeds operating cash flow — unsustainable[/]"
+    if val > 0.80:
+        return "[#ff8800]*WARNING* Capex consuming >80% of OCF — limited FCF[/]"
+    if val > 0.60:
+        return "[yellow]*WATCH* Capex at 60-80% of OCF — growth phase[/]"
+    if val > 0.40:
+        return "[green]*OK* Balanced capex/OCF ratio 40-60%[/]"
+    return "[bold green]*STRONG* Low capex intensity — strong FCF conversion[/]"
+
+
+def _a_reinvestment(val):
+    if _isna(val):
+        return "[dim]No reinvestment data[/]"
+    if val > 1.0:
+        return "[red]*CRITICAL* Reinvesting more than EBITDA — external funding needed[/]"
+    if val > 0.70:
+        return "[#ff8800]*WARNING* High reinvestment >70% — limited shareholder returns[/]"
+    if val > 0.50:
+        return "[yellow]*WATCH* Moderate reinvestment 50-70%[/]"
+    if val > 0.30:
+        return "[green]*OK* Disciplined reinvestment 30-50%[/]"
+    return "[bold green]*STRONG* Low reinvestment — harvesting mode[/]"
+
+
+def _a_div_payout(val):
+    if _isna(val):
+        return "[dim]No dividend payout data[/]"
+    if val > 1.0:
+        return "[red]*CRITICAL* Paying more than 100% of earnings — unsustainable[/]"
+    if val > 0.80:
+        return "[#ff8800]*WARNING* Payout >80% — limited safety margin[/]"
+    if val > 0.60:
+        return "[yellow]*WATCH* Moderate payout 60-80%[/]"
+    if val > 0.30:
+        return "[green]*OK* Sustainable payout 30-60%[/]"
+    return "[bold green]*STRONG* Conservative payout <30% — room for growth[/]"
+
+
+def _a_div_cover(val):
+    if _isna(val):
+        return "[dim]No dividend coverage data[/]"
+    if val > 3.0:
+        return "[bold green]*STRONG* FCF covers dividend 3x+ — very safe[/]"
+    if val > 2.0:
+        return "[green]*OK* FCF covers dividend 2x+ — solid[/]"
+    if val > 1.2:
+        return "[yellow]*WATCH* FCF covers dividend but tight margin[/]"
+    if val > 1.0:
+        return "[#ff8800]*WARNING* Barely covered by FCF — at risk[/]"
+    return "[red]*CRITICAL* FCF does not cover dividend — cut risk[/]"
+
+
+def _a_shareholder_yield(val):
+    if _isna(val):
+        return "[dim]No shareholder yield data[/]"
+    if val > 0.10:
+        return "[bold green]*STRONG* Total shareholder yield >10% — exceptional[/]"
+    if val > 0.06:
+        return "[green]*OK* Good shareholder yield 6-10%[/]"
+    if val > 0.03:
+        return "[yellow]*WATCH* Moderate shareholder yield 3-6%[/]"
+    if val > 0:
+        return "[dim]*OK* Low but positive shareholder yield[/]"
+    return "[dim]No shareholder returns[/]"
+
+
+def _a_fcf_ps(val):
+    if _isna(val):
+        return "[dim]No FCF per share data[/]"
+    if val > 0:
+        return f"[green]*OK* FCF per share: ${val:.2f}[/]"
+    return f"[red]*WARNING* Negative FCF per share: ${val:.2f}[/]"
+
+
+def _a_ocf_ps(val):
+    if _isna(val):
+        return "[dim]No OCF per share data[/]"
+    if val > 0:
+        return f"[green]*OK* Operating cash flow: ${val:.2f}/share[/]"
+    return f"[red]*WARNING* Negative OCF: ${val:.2f}/share[/]"
+
+
+def _a_fcf_conv(val):
+    if _isna(val):
+        return "[dim]No FCF conversion data[/]"
+    if val > 0.60:
+        return "[bold green]*STRONG* Excellent FCF/EBITDA conversion >60%[/]"
+    if val > 0.40:
+        return "[green]*OK* Good FCF conversion 40-60%[/]"
+    if val > 0.20:
+        return "[yellow]*WATCH* Moderate FCF conversion 20-40%[/]"
+    if val > 0:
+        return "[#ff8800]*WARNING* Low FCF conversion — heavy capex or working capital[/]"
+    return "[red]*CRITICAL* Negative FCF conversion[/]"
+
+
+def _a_capex_int(val):
+    if _isna(val):
+        return "[dim]No capex intensity data[/]"
+    if val > 0.40:
+        return "[red]*CRITICAL* Very high capex intensity >40%[/]"
+    if val > 0.25:
+        return "[#ff8800]*WARNING* High capex intensity 25-40%[/]"
+    if val > 0.15:
+        return "[yellow]*WATCH* Moderate capex intensity 15-25%[/]"
+    if val > 0.08:
+        return "[green]*OK* Disciplined capex intensity[/]"
+    return "[bold green]*STRONG* Very low capex intensity — capital efficient[/]"
 
 
 # ---------------------------------------------------------------------------
@@ -1011,6 +1206,8 @@ def _display_valuation(report):
                     _a_pncav(v.price_to_ncav), rel("price_to_ncav"))
     _add_metric_row(t, "Cash/Market Cap", fmt_pct(v.cash_to_market_cap),
                     _a_ctm(v.cash_to_market_cap), rel("cash_to_market_cap"))
+    _add_metric_row(t, "FCF Yield", fmt_pct(v.fcf_yield),
+                    _a_fcf_yield(v.fcf_yield), rel("fcf_yield"))
     console.print(t)
 
 
@@ -1055,6 +1252,10 @@ def _display_profitability(report):
                         _a_fcfm(p.fcf_margin), rel("fcf_margin"))
         _add_metric_row(t, "EBITDA Margin", fmt_pct(p.ebitda_margin),
                         _a_ebitdam(p.ebitda_margin), rel("ebitda_margin"))
+        _add_metric_row(t, "CROCI", fmt_pct(p.croci),
+                        _a_croci(p.croci), rel("croci"))
+        _add_metric_row(t, "OCF/Net Income", fmt_num(p.ocf_to_net_income),
+                        _a_ocf_ni(p.ocf_to_net_income), rel("ocf_to_net_income"))
     console.print(t)
 
 
@@ -1104,6 +1305,11 @@ def _display_solvency(report):
     _add_metric_row(t, "Net Debt", fmt_money(s.net_debt),
                     _a_net_debt(s.net_debt),
                     rel("net_debt") if hasattr(s, 'net_debt') else Relevance.RELEVANT)
+    _add_metric_row(t, "Debt Per Share",
+                    f"${s.debt_per_share:.2f}" if s.debt_per_share is not None else "[dim]N/A[/]",
+                    _a_debt_ps(s.debt_per_share), rel("debt_per_share"))
+    _add_metric_row(t, "Debt Service Coverage", fmt_num(s.debt_service_coverage, 1),
+                    _a_dsc(s.debt_service_coverage), rel("debt_service_coverage"))
     console.print(t)
 
 
@@ -1111,7 +1317,7 @@ def _a_debt_total(val):
     if _isna(val):
         return "[dim]No debt data[/]"
     if val == 0:
-        return "[bold green]Debt-free balance sheet[/]"
+        return "[bold green]*STRONG* Debt-free balance sheet[/]"
     return f"[cyan]Total obligations: {fmt_money(val)}[/]"
 
 
@@ -1119,10 +1325,10 @@ def _a_net_debt(val):
     if _isna(val):
         return "[dim]No net debt data[/]"
     if val < 0:
-        return "[green]Net cash position — cash exceeds debt[/]"
+        return "[green]*OK* Net cash position — cash exceeds debt[/]"
     if val == 0:
-        return "[yellow]Break-even — cash equals debt[/]"
-    return "[#ff8800]Net debt — leverage present[/]"
+        return "[yellow]*WATCH* Break-even — cash equals debt[/]"
+    return "[#ff8800]*WARNING* Net debt — leverage present[/]"
 
 
 def _display_growth(report):
@@ -1152,6 +1358,24 @@ def _display_growth(report):
                     _a_dil(g.shares_growth_yoy), rel("shares_growth_yoy"))
     _add_metric_row(t, "Dilution CAGR (3Y)", fmt_pct(g.shares_growth_3y_cagr),
                     _a_dil3y(g.shares_growth_3y_cagr), rel("shares_growth_3y_cagr"))
+    _add_metric_row(t, "Capex/Revenue", fmt_pct(g.capex_to_revenue),
+                    _a_capex_rev(g.capex_to_revenue), rel("capex_to_revenue"))
+    _add_metric_row(t, "Capex/OCF", fmt_pct(g.capex_to_ocf),
+                    _a_capex_ocf(g.capex_to_ocf), rel("capex_to_ocf"))
+    _add_metric_row(t, "Reinvestment Rate", fmt_pct(g.reinvestment_rate),
+                    _a_reinvestment(g.reinvestment_rate), rel("reinvestment_rate"))
+    _add_metric_row(t, "Div. Payout Ratio", fmt_pct(g.dividend_payout_ratio),
+                    _a_div_payout(g.dividend_payout_ratio), rel("dividend_payout_ratio"))
+    _add_metric_row(t, "Div. Coverage (FCF)", fmt_num(g.dividend_coverage, 1),
+                    _a_div_cover(g.dividend_coverage), rel("dividend_coverage"))
+    _add_metric_row(t, "Shareholder Yield", fmt_pct(g.shareholder_yield),
+                    _a_shareholder_yield(g.shareholder_yield), rel("shareholder_yield"))
+    _add_metric_row(t, "FCF Per Share",
+                    f"${g.fcf_per_share:.2f}" if g.fcf_per_share is not None else "[dim]N/A[/]",
+                    _a_fcf_ps(g.fcf_per_share), rel("fcf_per_share"))
+    _add_metric_row(t, "OCF Per Share",
+                    f"${g.ocf_per_share:.2f}" if g.ocf_per_share is not None else "[dim]N/A[/]",
+                    _a_ocf_ps(g.ocf_per_share), rel("ocf_per_share"))
     console.print(t)
 
 
@@ -1414,6 +1638,8 @@ def _display_screening(c):
         "tier_1_2_jurisdiction": "Tier 1/2 Jurisdiction",
         "cash_backing": "Cash Backing >30%",
         "has_revenue": "Has Revenue (Producers)",
+        "capital_discipline": "Capital Discipline (Capex <80% OCF)",
+        "dividend_covered": "Dividend Covered by FCF",
     }
 
     t = Table(title="Energy Screening Checklist", border_style="cyan")

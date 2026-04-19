@@ -102,6 +102,12 @@ def _score_valuation(r: AnalysisReport) -> float:
         if ev < 5: score += 15
         elif ev < 8: score += 10
         elif ev >= 12: score -= 10
+    # FCF yield bonus for energy producers
+    fcf_y = _safe(v.fcf_yield, None)
+    if fcf_y is not None:
+        if fcf_y > 0.10: score += 10
+        elif fcf_y > 0.06: score += 5
+        elif fcf_y < 0.02: score -= 5
     return max(0, min(100, score))
 
 
@@ -127,6 +133,12 @@ def _score_profitability(r: AnalysisReport) -> float:
         if nm > 0.15: score += 10
         elif nm > 0.05: score += 5
         elif nm < 0: score -= 15
+    # CROCI bonus — cash returns on invested capital
+    croci = _safe(p.croci, None)
+    if croci is not None:
+        if croci > 0.15: score += 8
+        elif croci > 0.08: score += 4
+        elif croci < 0: score -= 8
     return max(0, min(100, score))
 
 
@@ -163,6 +175,11 @@ def _score_solvency(r: AnalysisReport) -> float:
     bpct = _safe(s.burn_as_pct_of_market_cap, None)
     if bpct is not None and bpct > 0.08:
         score -= 10
+    # Debt service coverage bonus/penalty
+    dsc = _safe(s.debt_service_coverage, None)
+    if dsc is not None:
+        if dsc > 6: score += 5
+        elif dsc < 1.5: score -= 10
     return max(0, min(100, score))
 
 
@@ -194,6 +211,16 @@ def _score_growth(r: AnalysisReport) -> float:
     if dil is not None:
         if dil < -0.02: score += 5
         elif dil > 0.10: score -= 10
+    # Capital discipline bonus (producers)
+    capex_ocf = _safe(g.capex_to_ocf, None)
+    if capex_ocf is not None:
+        if capex_ocf < 0.50: score += 8
+        elif capex_ocf > 0.90: score -= 8
+    # Dividend coverage check
+    div_cov = _safe(g.dividend_coverage, None)
+    if div_cov is not None:
+        if div_cov > 2.0: score += 5
+        elif div_cov < 1.0: score -= 10
     return max(0, min(100, score))
 
 
@@ -242,6 +269,16 @@ def _energy_screening(r: AnalysisReport) -> dict:
         checks["has_revenue"] = any(fs.revenue and fs.revenue > 0 for fs in r.financials)
     else:
         checks["has_revenue"] = None
+
+    # Energy-specific capital discipline checks
+    if stage == CompanyStage.PRODUCER and g:
+        capex_ocf = _safe(g.capex_to_ocf, None)
+        checks["capital_discipline"] = capex_ocf < 0.80 if capex_ocf is not None else None
+        div_cov = _safe(g.dividend_coverage, None)
+        checks["dividend_covered"] = div_cov > 1.0 if div_cov is not None else None
+    else:
+        checks["capital_discipline"] = None
+        checks["dividend_covered"] = None
 
     return checks
 

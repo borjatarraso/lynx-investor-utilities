@@ -71,6 +71,7 @@ _STAGE_OVERRIDES: dict[str, dict[CompanyStage, Relevance]] = {
     "price_to_tangible_book": {CompanyStage.GRASSROOTS: C, CompanyStage.EXPLORER: C, CompanyStage.DEVELOPER: C, CompanyStage.PRODUCER: R, CompanyStage.ROYALTY: X},
     "price_to_ncav": {CompanyStage.GRASSROOTS: R, CompanyStage.EXPLORER: R, CompanyStage.DEVELOPER: X, CompanyStage.PRODUCER: X, CompanyStage.ROYALTY: I},
     "ps_ratio": {CompanyStage.GRASSROOTS: I, CompanyStage.EXPLORER: I, CompanyStage.DEVELOPER: I, CompanyStage.PRODUCER: R, CompanyStage.ROYALTY: R},
+    "fcf_yield": {CompanyStage.GRASSROOTS: I, CompanyStage.EXPLORER: I, CompanyStage.DEVELOPER: I, CompanyStage.PRODUCER: C, CompanyStage.ROYALTY: C},
     # PROFITABILITY
     "roe": {CompanyStage.GRASSROOTS: I, CompanyStage.EXPLORER: I, CompanyStage.DEVELOPER: I, CompanyStage.PRODUCER: R, CompanyStage.ROYALTY: C},
     "roa": {CompanyStage.GRASSROOTS: I, CompanyStage.EXPLORER: I, CompanyStage.DEVELOPER: I, CompanyStage.PRODUCER: R, CompanyStage.ROYALTY: R},
@@ -80,6 +81,8 @@ _STAGE_OVERRIDES: dict[str, dict[CompanyStage, Relevance]] = {
     "net_margin": {CompanyStage.GRASSROOTS: I, CompanyStage.EXPLORER: I, CompanyStage.DEVELOPER: I, CompanyStage.PRODUCER: R, CompanyStage.ROYALTY: R},
     "fcf_margin": {CompanyStage.GRASSROOTS: I, CompanyStage.EXPLORER: I, CompanyStage.DEVELOPER: I, CompanyStage.PRODUCER: C, CompanyStage.ROYALTY: C},
     "ebitda_margin": {CompanyStage.GRASSROOTS: I, CompanyStage.EXPLORER: I, CompanyStage.DEVELOPER: I, CompanyStage.PRODUCER: R, CompanyStage.ROYALTY: R},
+    "croci": {CompanyStage.GRASSROOTS: I, CompanyStage.EXPLORER: I, CompanyStage.DEVELOPER: I, CompanyStage.PRODUCER: C, CompanyStage.ROYALTY: R},
+    "ocf_to_net_income": {CompanyStage.GRASSROOTS: I, CompanyStage.EXPLORER: I, CompanyStage.DEVELOPER: I, CompanyStage.PRODUCER: R, CompanyStage.ROYALTY: R},
     # SOLVENCY
     "cash_burn_rate": {CompanyStage.GRASSROOTS: C, CompanyStage.EXPLORER: C, CompanyStage.DEVELOPER: C, CompanyStage.PRODUCER: X, CompanyStage.ROYALTY: I},
     "cash_runway_years": {CompanyStage.GRASSROOTS: C, CompanyStage.EXPLORER: C, CompanyStage.DEVELOPER: C, CompanyStage.PRODUCER: X, CompanyStage.ROYALTY: I},
@@ -93,6 +96,8 @@ _STAGE_OVERRIDES: dict[str, dict[CompanyStage, Relevance]] = {
     "debt_to_ebitda": {CompanyStage.GRASSROOTS: I, CompanyStage.EXPLORER: I, CompanyStage.DEVELOPER: X, CompanyStage.PRODUCER: C, CompanyStage.ROYALTY: R},
     "interest_coverage": {CompanyStage.GRASSROOTS: I, CompanyStage.EXPLORER: I, CompanyStage.DEVELOPER: X, CompanyStage.PRODUCER: R, CompanyStage.ROYALTY: X},
     "altman_z_score": {CompanyStage.GRASSROOTS: I, CompanyStage.EXPLORER: X, CompanyStage.DEVELOPER: X, CompanyStage.PRODUCER: R, CompanyStage.ROYALTY: X},
+    "debt_per_share": {CompanyStage.GRASSROOTS: R, CompanyStage.EXPLORER: R, CompanyStage.DEVELOPER: R, CompanyStage.PRODUCER: R, CompanyStage.ROYALTY: X},
+    "debt_service_coverage": {CompanyStage.GRASSROOTS: I, CompanyStage.EXPLORER: I, CompanyStage.DEVELOPER: X, CompanyStage.PRODUCER: C, CompanyStage.ROYALTY: R},
     # GROWTH
     "shares_growth_yoy": {CompanyStage.GRASSROOTS: C, CompanyStage.EXPLORER: C, CompanyStage.DEVELOPER: C, CompanyStage.PRODUCER: R, CompanyStage.ROYALTY: R},
     "shares_growth_3y_cagr": {CompanyStage.GRASSROOTS: C, CompanyStage.EXPLORER: C, CompanyStage.DEVELOPER: C, CompanyStage.PRODUCER: X, CompanyStage.ROYALTY: X},
@@ -104,6 +109,14 @@ _STAGE_OVERRIDES: dict[str, dict[CompanyStage, Relevance]] = {
     "earnings_cagr_5y": {CompanyStage.GRASSROOTS: I, CompanyStage.EXPLORER: I, CompanyStage.DEVELOPER: I, CompanyStage.PRODUCER: X, CompanyStage.ROYALTY: X},
     "book_value_growth_yoy": {CompanyStage.GRASSROOTS: R, CompanyStage.EXPLORER: R, CompanyStage.DEVELOPER: R, CompanyStage.PRODUCER: X, CompanyStage.ROYALTY: X},
     "fcf_growth_yoy": {CompanyStage.GRASSROOTS: I, CompanyStage.EXPLORER: I, CompanyStage.DEVELOPER: I, CompanyStage.PRODUCER: R, CompanyStage.ROYALTY: R},
+    "capex_to_revenue": {CompanyStage.GRASSROOTS: I, CompanyStage.EXPLORER: I, CompanyStage.DEVELOPER: X, CompanyStage.PRODUCER: C, CompanyStage.ROYALTY: I},
+    "capex_to_ocf": {CompanyStage.GRASSROOTS: I, CompanyStage.EXPLORER: I, CompanyStage.DEVELOPER: X, CompanyStage.PRODUCER: C, CompanyStage.ROYALTY: X},
+    "reinvestment_rate": {CompanyStage.GRASSROOTS: I, CompanyStage.EXPLORER: I, CompanyStage.DEVELOPER: X, CompanyStage.PRODUCER: R, CompanyStage.ROYALTY: X},
+    "dividend_payout_ratio": {CompanyStage.GRASSROOTS: I, CompanyStage.EXPLORER: I, CompanyStage.DEVELOPER: I, CompanyStage.PRODUCER: R, CompanyStage.ROYALTY: C},
+    "dividend_coverage": {CompanyStage.GRASSROOTS: I, CompanyStage.EXPLORER: I, CompanyStage.DEVELOPER: I, CompanyStage.PRODUCER: R, CompanyStage.ROYALTY: C},
+    "shareholder_yield": {CompanyStage.GRASSROOTS: I, CompanyStage.EXPLORER: I, CompanyStage.DEVELOPER: I, CompanyStage.PRODUCER: R, CompanyStage.ROYALTY: R},
+    "fcf_per_share": {CompanyStage.GRASSROOTS: I, CompanyStage.EXPLORER: I, CompanyStage.DEVELOPER: I, CompanyStage.PRODUCER: C, CompanyStage.ROYALTY: C},
+    "ocf_per_share": {CompanyStage.GRASSROOTS: X, CompanyStage.EXPLORER: X, CompanyStage.DEVELOPER: R, CompanyStage.PRODUCER: R, CompanyStage.ROYALTY: R},
     # ENERGY QUALITY
     "quality_score": {CompanyStage.GRASSROOTS: C, CompanyStage.EXPLORER: C, CompanyStage.DEVELOPER: C, CompanyStage.PRODUCER: R, CompanyStage.ROYALTY: R},
     "insider_alignment": {CompanyStage.GRASSROOTS: C, CompanyStage.EXPLORER: C, CompanyStage.DEVELOPER: C, CompanyStage.PRODUCER: R, CompanyStage.ROYALTY: R},

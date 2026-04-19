@@ -65,6 +65,12 @@ def calc_valuation(
     if total_cash and v.market_cap and v.market_cap > 0:
         v.cash_to_market_cap = total_cash / v.market_cap
 
+    # FCF Yield (FCF / Enterprise Value)
+    if statements and v.enterprise_value and v.enterprise_value > 0:
+        latest = statements[0]
+        if latest.free_cash_flow and latest.free_cash_flow > 0:
+            v.fcf_yield = latest.free_cash_flow / v.enterprise_value
+
     return v
 
 
@@ -90,6 +96,16 @@ def calc_profitability(
             p.fcf_margin = s.free_cash_flow / s.revenue
         if s.ebitda and s.revenue and s.revenue > 0:
             p.ebitda_margin = s.ebitda / s.revenue
+
+        # CROCI — Cash Return on Capital Invested
+        if s.operating_cash_flow and s.total_assets and s.total_cash is not None:
+            invested = s.total_assets - (s.total_cash or 0)
+            if invested > 0:
+                p.croci = s.operating_cash_flow / invested
+
+        # Operating Cash Flow to Net Income ratio (earnings quality)
+        if s.operating_cash_flow and s.net_income and s.net_income != 0:
+            p.ocf_to_net_income = s.operating_cash_flow / abs(s.net_income)
 
     return p
 
@@ -167,6 +183,20 @@ def calc_solvency(
         if s.cash_burn_rate and s.cash_burn_rate < 0 and market_cap and market_cap > 0:
             s.burn_as_pct_of_market_cap = abs(s.cash_burn_rate) / market_cap
 
+    # Debt per share and net debt per share
+    if shares:
+        if s.total_debt is not None and shares > 0:
+            s.debt_per_share = s.total_debt / shares
+        if s.net_debt is not None and shares > 0:
+            s.net_debt_per_share = s.net_debt / shares
+
+    # Debt service coverage (OCF / total debt service)
+    if statements and s.total_debt and s.total_debt > 0:
+        st = statements[0]
+        if st.operating_cash_flow and st.operating_cash_flow > 0:
+            ie = abs(st.interest_expense) if st.interest_expense else s.total_debt * 0.05
+            s.debt_service_coverage = st.operating_cash_flow / ie if ie > 0 else None
+
     return s
 
 
@@ -205,6 +235,34 @@ def calc_growth(
         g.revenue_cagr_5y = _cagr(stmts[-1].revenue, stmts[0].revenue, len(stmts) - 1)
         g.earnings_cagr_5y = _cagr(stmts[-1].net_income, stmts[0].net_income, len(stmts) - 1)
 
+    # Energy capital discipline metrics
+    if stmts[0].capital_expenditure is not None:
+        capex = abs(stmts[0].capital_expenditure)
+
+        if stmts[0].revenue and stmts[0].revenue > 0:
+            g.capex_to_revenue = capex / stmts[0].revenue
+
+        if stmts[0].operating_cash_flow and stmts[0].operating_cash_flow > 0:
+            g.capex_to_ocf = capex / stmts[0].operating_cash_flow
+
+        if stmts[0].ebitda and stmts[0].ebitda > 0:
+            g.reinvestment_rate = capex / stmts[0].ebitda
+
+    # Dividend analysis
+    if stmts[0].dividends_paid and stmts[0].net_income and stmts[0].net_income > 0:
+        g.dividend_payout_ratio = abs(stmts[0].dividends_paid) / stmts[0].net_income
+
+    if stmts[0].dividends_paid and stmts[0].free_cash_flow and stmts[0].free_cash_flow > 0:
+        g.dividend_coverage = stmts[0].free_cash_flow / abs(stmts[0].dividends_paid)
+
+    # Per-share metrics
+    shares = stmts[0].shares_outstanding
+    if shares and shares > 0:
+        if stmts[0].free_cash_flow is not None:
+            g.fcf_per_share = stmts[0].free_cash_flow / shares
+        if stmts[0].operating_cash_flow is not None:
+            g.ocf_per_share = stmts[0].operating_cash_flow / shares
+
     return g
 
 
@@ -217,6 +275,15 @@ def calc_efficiency(
     s = statements[0]
     if s.revenue and s.total_assets and s.total_assets > 0:
         e.asset_turnover = s.revenue / s.total_assets
+
+    # FCF conversion (FCF / EBITDA)
+    if s.free_cash_flow is not None and s.ebitda and s.ebitda > 0:
+        e.fcf_conversion = s.free_cash_flow / s.ebitda
+
+    # Capex intensity (Capex / Revenue)
+    if s.capital_expenditure is not None and s.revenue and s.revenue > 0:
+        e.capex_intensity = abs(s.capital_expenditure) / s.revenue
+
     return e
 
 

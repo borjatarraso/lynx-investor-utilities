@@ -121,6 +121,8 @@ class ValuationMetrics:
     p_nav: Optional[float] = None
     cash_to_market_cap: Optional[float] = None
     nav_per_share: Optional[float] = None
+    fcf_yield: Optional[float] = None
+    ev_per_daily_boe: Optional[float] = None
 
 
 @dataclass
@@ -137,6 +139,8 @@ class ProfitabilityMetrics:
     netback_unit: str = "boe"
     operating_cost_per_boe: Optional[float] = None
     netback_margin: Optional[float] = None
+    croci: Optional[float] = None
+    ocf_to_net_income: Optional[float] = None
 
 
 @dataclass
@@ -159,6 +163,9 @@ class SolvencyMetrics:
     ncav_per_share: Optional[float] = None
     quarterly_burn_rate: Optional[float] = None
     burn_as_pct_of_market_cap: Optional[float] = None
+    debt_per_share: Optional[float] = None
+    net_debt_per_share: Optional[float] = None
+    debt_service_coverage: Optional[float] = None
 
 
 @dataclass
@@ -177,6 +184,14 @@ class GrowthMetrics:
     fully_diluted_shares: Optional[float] = None
     dilution_ratio: Optional[float] = None
     production_growth_yoy: Optional[float] = None
+    capex_to_revenue: Optional[float] = None
+    capex_to_ocf: Optional[float] = None
+    reinvestment_rate: Optional[float] = None
+    dividend_payout_ratio: Optional[float] = None
+    dividend_coverage: Optional[float] = None
+    shareholder_yield: Optional[float] = None
+    fcf_per_share: Optional[float] = None
+    ocf_per_share: Optional[float] = None
 
 
 @dataclass
@@ -187,6 +202,8 @@ class EfficiencyMetrics:
     days_sales_outstanding: Optional[float] = None
     days_inventory: Optional[float] = None
     cash_conversion_cycle: Optional[float] = None
+    fcf_conversion: Optional[float] = None
+    capex_intensity: Optional[float] = None
 
 
 @dataclass

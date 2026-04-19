@@ -2,6 +2,34 @@
 
 All notable changes to Lynx Energy Analysis are documented here.
 
+## [0.3] - 2026-04-19
+
+### Added
+- **15 new energy-specific metrics** across all analysis sections:
+  - **Valuation**: FCF Yield (FCF / Enterprise Value) — the primary valuation anchor for energy producers
+  - **Profitability**: CROCI (Cash Return on Capital Invested), OCF/Net Income ratio (earnings quality check)
+  - **Solvency**: Debt Per Share, Net Debt Per Share, Debt Service Coverage (OCF / interest expense)
+  - **Growth & Capital Discipline**: Capex/Revenue, Capex/OCF, Reinvestment Rate (Capex/EBITDA), Dividend Payout Ratio, Dividend Coverage (FCF/Dividends), Shareholder Yield, FCF Per Share, OCF Per Share
+  - **Efficiency**: FCF Conversion (FCF/EBITDA), Capex Intensity (Capex/Revenue)
+- **Severity markers** on ALL metric assessments — severity between asterisks:
+  - `*CRITICAL*` — urgent danger or red flag requiring immediate attention
+  - `*WARNING*` — significant concern that needs monitoring
+  - `*WATCH*` — metric needs observation, not yet alarming
+  - `*OK*` — acceptable, normal range
+  - `*STRONG*` — excellent, strong positive signal
+- **15 new assessment functions** with severity-graded thresholds tailored to energy sector benchmarks
+- **2 new screening checklist criteria** for energy producers:
+  - Capital Discipline (Capex <80% of OCF)
+  - Dividend Covered by FCF
+- **15 new metric explanations** in the --explain system with energy-specific context
+- **Stage-aware relevance overrides** for all 15 new metrics (e.g., FCF Yield is *CRITICAL* for producers, *IRRELEVANT* for explorers)
+- **Scoring integration**: FCF Yield, CROCI, Debt Service Coverage, Capex/OCF, and Dividend Coverage now contribute to the composite scoring across valuation, profitability, solvency, and growth categories
+- Total explained metrics: 53 (up from 38)
+
+### Changed
+- All existing assessment functions (38 total) updated with severity markers between asterisks
+- Version bumped to 0.3
+
 ## [0.2] - 2026-04-19
 
 ### Fixed
