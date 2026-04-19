@@ -11,12 +11,19 @@ All notable changes to Lynx Energy Analysis are documented here.
   - **Solvency**: Debt Per Share, Net Debt Per Share, Debt Service Coverage (OCF / interest expense)
   - **Growth & Capital Discipline**: Capex/Revenue, Capex/OCF, Reinvestment Rate (Capex/EBITDA), Dividend Payout Ratio, Dividend Coverage (FCF/Dividends), Shareholder Yield, FCF Per Share, OCF Per Share
   - **Efficiency**: FCF Conversion (FCF/EBITDA), Capex Intensity (Capex/Revenue)
-- **Severity markers** on ALL metric assessments — severity between asterisks:
-  - `*CRITICAL*` — urgent danger or red flag requiring immediate attention
-  - `*WARNING*` — significant concern that needs monitoring
-  - `*WATCH*` — metric needs observation, not yet alarming
-  - `*OK*` — acceptable, normal range
-  - `*STRONG*` — excellent, strong positive signal
+- **Severity markers** on ALL metric assessments — color-coded with distinct formatting:
+  - `***CRITICAL***` — urgent red flag, bold red uppercase text
+  - `*WARNING*` — significant concern, orange text
+  - `[WATCH]` — needs monitoring, yellow text
+  - `[OK]` — normal range, green text
+  - `[STRONG]` — excellent signal, grey/silver text
+- **Impact column** added to all metric tables showing relevance level:
+  - Critical — blinking red text
+  - Important — orange text
+  - Relevant — yellow text
+  - Informational — green text
+  - Irrelevant — grey text (hidden metrics)
+- **New IMPORTANT relevance level** added between CRITICAL and RELEVANT for metrics that are truly important but not quite critical (P/E for producers, D/E ratio, EV/Revenue, ROE, share dilution)
 - **15 new assessment functions** with severity-graded thresholds tailored to energy sector benchmarks
 - **2 new screening checklist criteria** for energy producers:
   - Capital Discipline (Capex <80% of OCF)

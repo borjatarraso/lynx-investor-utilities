@@ -20,6 +20,7 @@ from __future__ import annotations
 from lynx_energy.models import CompanyStage, CompanyTier, Relevance
 
 C = Relevance.CRITICAL
+M = Relevance.IMPORTANT
 R = Relevance.RELEVANT
 X = Relevance.CONTEXTUAL
 I = Relevance.IRRELEVANT
@@ -58,22 +59,22 @@ def get_relevance(
 
 _STAGE_OVERRIDES: dict[str, dict[CompanyStage, Relevance]] = {
     # VALUATION
-    "pe_trailing": {CompanyStage.GRASSROOTS: I, CompanyStage.EXPLORER: I, CompanyStage.DEVELOPER: I, CompanyStage.PRODUCER: R, CompanyStage.ROYALTY: R},
+    "pe_trailing": {CompanyStage.GRASSROOTS: I, CompanyStage.EXPLORER: I, CompanyStage.DEVELOPER: I, CompanyStage.PRODUCER: M, CompanyStage.ROYALTY: M},
     "pe_forward": {CompanyStage.GRASSROOTS: I, CompanyStage.EXPLORER: I, CompanyStage.DEVELOPER: I, CompanyStage.PRODUCER: X, CompanyStage.ROYALTY: R},
     "p_fcf": {CompanyStage.GRASSROOTS: I, CompanyStage.EXPLORER: I, CompanyStage.DEVELOPER: I, CompanyStage.PRODUCER: C, CompanyStage.ROYALTY: C},
     "ev_ebitda": {CompanyStage.GRASSROOTS: I, CompanyStage.EXPLORER: I, CompanyStage.DEVELOPER: X, CompanyStage.PRODUCER: C, CompanyStage.ROYALTY: C},
-    "ev_revenue": {CompanyStage.GRASSROOTS: I, CompanyStage.EXPLORER: I, CompanyStage.DEVELOPER: X, CompanyStage.PRODUCER: R, CompanyStage.ROYALTY: R},
+    "ev_revenue": {CompanyStage.GRASSROOTS: I, CompanyStage.EXPLORER: I, CompanyStage.DEVELOPER: X, CompanyStage.PRODUCER: M, CompanyStage.ROYALTY: M},
     "peg_ratio": {CompanyStage.GRASSROOTS: I, CompanyStage.EXPLORER: I, CompanyStage.DEVELOPER: I, CompanyStage.PRODUCER: X, CompanyStage.ROYALTY: X},
     "dividend_yield": {CompanyStage.GRASSROOTS: I, CompanyStage.EXPLORER: I, CompanyStage.DEVELOPER: I, CompanyStage.PRODUCER: X, CompanyStage.ROYALTY: R},
     "earnings_yield": {CompanyStage.GRASSROOTS: I, CompanyStage.EXPLORER: I, CompanyStage.DEVELOPER: I, CompanyStage.PRODUCER: R, CompanyStage.ROYALTY: R},
-    "cash_to_market_cap": {CompanyStage.GRASSROOTS: C, CompanyStage.EXPLORER: C, CompanyStage.DEVELOPER: R, CompanyStage.PRODUCER: X, CompanyStage.ROYALTY: X},
+    "cash_to_market_cap": {CompanyStage.GRASSROOTS: C, CompanyStage.EXPLORER: C, CompanyStage.DEVELOPER: M, CompanyStage.PRODUCER: X, CompanyStage.ROYALTY: X},
     "pb_ratio": {CompanyStage.GRASSROOTS: R, CompanyStage.EXPLORER: C, CompanyStage.DEVELOPER: C, CompanyStage.PRODUCER: R, CompanyStage.ROYALTY: R},
     "price_to_tangible_book": {CompanyStage.GRASSROOTS: C, CompanyStage.EXPLORER: C, CompanyStage.DEVELOPER: C, CompanyStage.PRODUCER: R, CompanyStage.ROYALTY: X},
     "price_to_ncav": {CompanyStage.GRASSROOTS: R, CompanyStage.EXPLORER: R, CompanyStage.DEVELOPER: X, CompanyStage.PRODUCER: X, CompanyStage.ROYALTY: I},
     "ps_ratio": {CompanyStage.GRASSROOTS: I, CompanyStage.EXPLORER: I, CompanyStage.DEVELOPER: I, CompanyStage.PRODUCER: R, CompanyStage.ROYALTY: R},
     "fcf_yield": {CompanyStage.GRASSROOTS: I, CompanyStage.EXPLORER: I, CompanyStage.DEVELOPER: I, CompanyStage.PRODUCER: C, CompanyStage.ROYALTY: C},
     # PROFITABILITY
-    "roe": {CompanyStage.GRASSROOTS: I, CompanyStage.EXPLORER: I, CompanyStage.DEVELOPER: I, CompanyStage.PRODUCER: R, CompanyStage.ROYALTY: C},
+    "roe": {CompanyStage.GRASSROOTS: I, CompanyStage.EXPLORER: I, CompanyStage.DEVELOPER: I, CompanyStage.PRODUCER: M, CompanyStage.ROYALTY: C},
     "roa": {CompanyStage.GRASSROOTS: I, CompanyStage.EXPLORER: I, CompanyStage.DEVELOPER: I, CompanyStage.PRODUCER: R, CompanyStage.ROYALTY: R},
     "roic": {CompanyStage.GRASSROOTS: I, CompanyStage.EXPLORER: I, CompanyStage.DEVELOPER: I, CompanyStage.PRODUCER: C, CompanyStage.ROYALTY: C},
     "gross_margin": {CompanyStage.GRASSROOTS: I, CompanyStage.EXPLORER: I, CompanyStage.DEVELOPER: I, CompanyStage.PRODUCER: C, CompanyStage.ROYALTY: R},
@@ -92,14 +93,14 @@ _STAGE_OVERRIDES: dict[str, dict[CompanyStage, Relevance]] = {
     "ncav_per_share": {CompanyStage.GRASSROOTS: R, CompanyStage.EXPLORER: R, CompanyStage.DEVELOPER: X, CompanyStage.PRODUCER: X, CompanyStage.ROYALTY: I},
     "current_ratio": {CompanyStage.GRASSROOTS: C, CompanyStage.EXPLORER: C, CompanyStage.DEVELOPER: C, CompanyStage.PRODUCER: R, CompanyStage.ROYALTY: R},
     "quick_ratio": {CompanyStage.GRASSROOTS: R, CompanyStage.EXPLORER: R, CompanyStage.DEVELOPER: R, CompanyStage.PRODUCER: X, CompanyStage.ROYALTY: X},
-    "debt_to_equity": {CompanyStage.GRASSROOTS: C, CompanyStage.EXPLORER: C, CompanyStage.DEVELOPER: C, CompanyStage.PRODUCER: R, CompanyStage.ROYALTY: R},
+    "debt_to_equity": {CompanyStage.GRASSROOTS: C, CompanyStage.EXPLORER: C, CompanyStage.DEVELOPER: C, CompanyStage.PRODUCER: M, CompanyStage.ROYALTY: M},
     "debt_to_ebitda": {CompanyStage.GRASSROOTS: I, CompanyStage.EXPLORER: I, CompanyStage.DEVELOPER: X, CompanyStage.PRODUCER: C, CompanyStage.ROYALTY: R},
     "interest_coverage": {CompanyStage.GRASSROOTS: I, CompanyStage.EXPLORER: I, CompanyStage.DEVELOPER: X, CompanyStage.PRODUCER: R, CompanyStage.ROYALTY: X},
     "altman_z_score": {CompanyStage.GRASSROOTS: I, CompanyStage.EXPLORER: X, CompanyStage.DEVELOPER: X, CompanyStage.PRODUCER: R, CompanyStage.ROYALTY: X},
     "debt_per_share": {CompanyStage.GRASSROOTS: R, CompanyStage.EXPLORER: R, CompanyStage.DEVELOPER: R, CompanyStage.PRODUCER: R, CompanyStage.ROYALTY: X},
     "debt_service_coverage": {CompanyStage.GRASSROOTS: I, CompanyStage.EXPLORER: I, CompanyStage.DEVELOPER: X, CompanyStage.PRODUCER: C, CompanyStage.ROYALTY: R},
     # GROWTH
-    "shares_growth_yoy": {CompanyStage.GRASSROOTS: C, CompanyStage.EXPLORER: C, CompanyStage.DEVELOPER: C, CompanyStage.PRODUCER: R, CompanyStage.ROYALTY: R},
+    "shares_growth_yoy": {CompanyStage.GRASSROOTS: C, CompanyStage.EXPLORER: C, CompanyStage.DEVELOPER: C, CompanyStage.PRODUCER: M, CompanyStage.ROYALTY: M},
     "shares_growth_3y_cagr": {CompanyStage.GRASSROOTS: C, CompanyStage.EXPLORER: C, CompanyStage.DEVELOPER: C, CompanyStage.PRODUCER: X, CompanyStage.ROYALTY: X},
     "revenue_growth_yoy": {CompanyStage.GRASSROOTS: I, CompanyStage.EXPLORER: I, CompanyStage.DEVELOPER: I, CompanyStage.PRODUCER: C, CompanyStage.ROYALTY: C},
     "revenue_cagr_3y": {CompanyStage.GRASSROOTS: I, CompanyStage.EXPLORER: I, CompanyStage.DEVELOPER: I, CompanyStage.PRODUCER: R, CompanyStage.ROYALTY: R},

@@ -70,6 +70,7 @@ class JurisdictionTier(str, Enum):
 
 class Relevance(str, Enum):
     CRITICAL = "critical"
+    IMPORTANT = "important"
     RELEVANT = "relevant"
     CONTEXTUAL = "contextual"
     IRRELEVANT = "irrelevant"
