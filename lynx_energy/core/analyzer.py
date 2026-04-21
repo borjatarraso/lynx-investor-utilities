@@ -28,6 +28,8 @@ from lynx_energy.models import (
     classify_commodity, classify_jurisdiction, classify_stage, classify_tier,
 )
 
+from lynx_investor_core.sector_gate import SectorMismatchError, SectorValidator
+
 console = Console(stderr=True)
 
 # Sectors and industries that this tool is designed for
@@ -39,56 +41,37 @@ _ALLOWED_INDUSTRIES = {
     "oil & gas drilling", "oil & gas exploration & production",
     "independent oil & gas", "major integrated oil & gas",
 }
+_ENERGY_DESCRIPTION_PATTERNS = [
+    r"\bcrude oil\b", r"\bpetroleum\b", r"\bnatural gas\b",
+    r"\boil.{0,15}gas\b", r"\boil.{0,10}production\b",
+    r"\bgas.{0,10}production\b", r"\boil.{0,10}exploration\b",
+    r"\bpipeline\b", r"\brefinery\b", r"\brefining\b",
+    r"\bupstream.{0,30}downstream\b", r"\bmidstream\b",
+    r"\bdrilling\b", r"\boil.?field\b", r"\bwellhead\b",
+    r"\breservoir\b", r"\bbarrels?\s+(of\s+)?oil\b", r"\bboe\b",
+    r"\be&p\b", r"\blng\b", r"\bngl\b",
+    r"\buranium\b", r"\bnuclear\b",
+    r"\bthermal coal\b", r"\bcoal mine\b", r"\bcoal mining\b",
+]
 
+_SCOPE_MSG = (
+    "the scope of this tool.\n\n"
+    "Lynx Energy Analysis is specialized exclusively for:\n"
+    "  - Energy (Oil & Gas, Uranium, Coal, Renewables)\n\n"
+    "For general fundamental analysis, use lynx-fundamental instead"
+)
 
-class SectorMismatchError(Exception):
-    """Raised when a company does not belong to the energy sector."""
-    pass
+_VALIDATOR = SectorValidator.build(
+    allowed_sectors=_ALLOWED_SECTORS,
+    allowed_industries=_ALLOWED_INDUSTRIES,
+    description_patterns=_ENERGY_DESCRIPTION_PATTERNS,
+    scope_description=_SCOPE_MSG,
+)
 
 
 def _validate_sector(profile: CompanyProfile) -> None:
-    """Check if the company belongs to the energy sector.
-
-    Raises SectorMismatchError if the company is outside scope.
-    """
-    sector = (profile.sector or "").lower().strip()
-    industry = (profile.industry or "").lower().strip()
-
-    # Allow if sector matches
-    if sector in _ALLOWED_SECTORS:
-        return
-
-    # Allow if industry matches any known energy industry
-    if industry:
-        for allowed in _ALLOWED_INDUSTRIES:
-            if allowed in industry or industry in allowed:
-                return
-
-    # Allow if the description mentions energy-specific terms (not generic ones)
-    desc = (profile.description or "").lower()
-    energy_specific = [
-        r"\bcrude oil\b", r"\bpetroleum\b", r"\bnatural gas\b",
-        r"\boil.{0,15}gas\b", r"\boil.{0,10}production\b",
-        r"\bgas.{0,10}production\b", r"\boil.{0,10}exploration\b",
-        r"\bpipeline\b", r"\brefinery\b", r"\brefining\b",
-        r"\bupstream.{0,30}downstream\b", r"\bmidstream\b",
-        r"\bdrilling\b", r"\boil.?field\b", r"\bwellhead\b",
-        r"\breservoir\b", r"\bbarrels?\s+(of\s+)?oil\b", r"\bboe\b",
-        r"\be&p\b", r"\blng\b", r"\bngl\b",
-        r"\buranium\b", r"\bnuclear\b",
-        r"\bthermal coal\b", r"\bcoal mine\b", r"\bcoal mining\b",
-    ]
-    if any(re.search(pattern, desc) for pattern in energy_specific):
-        return
-
-    raise SectorMismatchError(
-        f"{profile.name} ({profile.ticker}) is in the "
-        f"'{profile.sector or 'Unknown'}' / '{profile.industry or 'Unknown'}' "
-        f"sector, which is outside the scope of this tool.\n\n"
-        f"Lynx Energy Analysis is specialized exclusively for:\n"
-        f"  - Energy (Oil & Gas, Uranium, Coal, Renewables)\n\n"
-        f"For general fundamental analysis, use lynx-fundamental instead."
-    )
+    """Raise SectorMismatchError if *profile* is outside the energy scope."""
+    _VALIDATOR.validate(profile)
 
 ProgressCallback = Callable[[str, AnalysisReport], None]
 
