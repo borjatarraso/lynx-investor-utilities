@@ -1,8 +1,8 @@
 """Unit tests for the relevance system."""
 
 import pytest
-from lynx_energy.models import CompanyStage, CompanyTier, Relevance
-from lynx_energy.metrics.relevance import get_relevance
+from lynx_utilities.models import CompanyStage, CompanyTier, Relevance
+from lynx_utilities.metrics.relevance import get_relevance
 
 
 class TestStageOverrides:
@@ -68,8 +68,8 @@ class TestImportantLevel:
     def test_share_dilution_important_for_producer(self):
         assert get_relevance("shares_growth_yoy", CompanyTier.MID, "growth", CompanyStage.PRODUCER) == Relevance.IMPORTANT
 
-    def test_new_energy_metrics_have_relevance(self):
-        """All new energy metrics should have stage overrides."""
+    def test_new_utilities_metrics_have_relevance(self):
+        """All new utilities-specific metrics should have stage overrides."""
         new_metrics = ["fcf_yield", "croci", "debt_service_coverage",
                        "capex_to_revenue", "capex_to_ocf", "fcf_per_share"]
         for key in new_metrics:

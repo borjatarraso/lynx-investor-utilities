@@ -1,7 +1,7 @@
-"""Unit tests for data models and classification functions."""
+"""Unit tests for data models and classification functions (utilities sector)."""
 
 import pytest
-from lynx_energy.models import (
+from lynx_utilities.models import (
     CompanyProfile, CompanyStage, CompanyTier, Commodity,
     JurisdictionTier, Relevance, AnalysisReport,
     ValuationMetrics, SolvencyMetrics, GrowthMetrics,
@@ -42,31 +42,31 @@ class TestClassifyTier:
 
 class TestClassifyStage:
     def test_producer_with_revenue(self):
-        assert classify_stage("oil production operations with netback", 50_000_000) == CompanyStage.PRODUCER
+        assert classify_stage("regulated electric utility with rate base", 500_000_000) == CompanyStage.PRODUCER
 
     def test_developer(self):
-        assert classify_stage("feasibility study complete", 0) == CompanyStage.DEVELOPER
+        assert classify_stage("wind farm under construction, commercial operation date 2027", 0) == CompanyStage.DEVELOPER
 
-    def test_developer_exploration_and_development(self):
-        assert classify_stage("exploration and development of uranium", 5_000_000) == CompanyStage.DEVELOPER
+    def test_developer_pre_operational(self):
+        assert classify_stage("pre-operational solar project nearing COD", 5_000_000) == CompanyStage.DEVELOPER
 
     def test_explorer(self):
-        assert classify_stage("NI 43-101 resource estimate with inferred resource", 0) == CompanyStage.EXPLORER
+        assert classify_stage("development pipeline includes 3 GW of permitted projects with PPA signed", 0) == CompanyStage.EXPLORER
 
     def test_grassroots(self):
-        assert classify_stage("early stage exploration drill program", 0) == CompanyStage.GRASSROOTS
+        assert classify_stage("early stage development of greenfield solar site, resource assessment", 0) == CompanyStage.GRASSROOTS
 
-    def test_royalty(self):
-        assert classify_stage("royalty and streaming company", 20_000_000) == CompanyStage.ROYALTY
+    def test_royalty_yieldco(self):
+        assert classify_stage("yieldco operating a portfolio of contracted wind and solar assets", 200_000_000) == CompanyStage.ROYALTY
 
-    def test_integrated_major_not_royalty(self):
-        """Companies with 'upstream/downstream' should NOT be classified as Royalty."""
-        desc = "Engages in exploration and production of crude oil. Upstream and downstream operations."
-        assert classify_stage(desc, 300_000_000_000) == CompanyStage.PRODUCER
+    def test_integrated_multi_utility_is_producer(self):
+        """Multi-utility with electric and gas operations should classify as Producer."""
+        desc = "Operates regulated electric utility and gas distribution across 4 states."
+        assert classify_stage(desc, 15_000_000_000) == CompanyStage.PRODUCER
 
     def test_revenue_without_keywords_defaults_producer(self):
-        """Revenue-generating company with no stage keywords defaults to Producer."""
-        assert classify_stage("generic energy company", 50_000_000) == CompanyStage.PRODUCER
+        """Revenue-generating company with no stage keywords defaults to Operating Utility."""
+        assert classify_stage("generic utility company", 500_000_000) == CompanyStage.PRODUCER
 
     def test_none_description(self):
         assert classify_stage(None, None) == CompanyStage.GRASSROOTS
@@ -75,39 +75,36 @@ class TestClassifyStage:
         assert classify_stage("", 0) == CompanyStage.GRASSROOTS
 
     def test_industry_hint(self):
-        assert classify_stage("company overview", 0, {"industry": "Oil & Gas E&P"}) == CompanyStage.EXPLORER
+        assert classify_stage("company overview", 0, {"industry": "Utilities—Regulated Electric"}) == CompanyStage.EXPLORER
 
 
 class TestClassifyCommodity:
-    def test_uranium(self):
-        assert classify_commodity("uranium u3o8 exploration", "Uranium") == Commodity.URANIUM
+    def test_regulated_electric(self):
+        assert classify_commodity("regulated electric utility serving 4 million customers", "Utilities—Regulated Electric") == Commodity.REGULATED_ELECTRIC
 
-    def test_crude_oil(self):
-        assert classify_commodity("crude oil production petroleum", "Oil & Gas E&P") == Commodity.CRUDE_OIL
+    def test_merchant_power(self):
+        assert classify_commodity("independent power producer selling into wholesale markets", "Utilities—Independent Power Producers") == Commodity.MERCHANT_POWER
 
-    def test_natural_gas(self):
-        assert classify_commodity("natural gas shale gas production", "Oil & Gas E&P") == Commodity.NATURAL_GAS
+    def test_regulated_gas(self):
+        assert classify_commodity("natural gas utility local distribution company", "Utilities—Regulated Gas") == Commodity.REGULATED_GAS
 
-    def test_lng(self):
-        assert classify_commodity("liquefied natural gas lng export", None) == Commodity.LNG
+    def test_water(self):
+        assert classify_commodity("water and wastewater services across 14 states", "Utilities—Regulated Water") == Commodity.WATER
 
-    def test_coal(self):
-        assert classify_commodity("thermal coal mining operations", "Thermal Coal") == Commodity.COAL
+    def test_renewable_power(self):
+        assert classify_commodity("utility-scale solar and wind power portfolio", None) == Commodity.RENEWABLE_POWER
 
-    def test_hydrogen(self):
-        assert classify_commodity("green hydrogen electrolysis project", None) == Commodity.HYDROGEN
+    def test_nuclear(self):
+        assert classify_commodity("nuclear generation fleet with 5 reactors", None) == Commodity.NUCLEAR_GENERATION
 
-    def test_renewable(self):
-        assert classify_commodity("solar wind renewable energy", None) == Commodity.RENEWABLE
+    def test_multi_utility(self):
+        assert classify_commodity("multi-utility combining electric and gas services", None) == Commodity.MULTI_UTILITY
 
     def test_other_when_no_match(self):
         assert classify_commodity("generic company", None) == Commodity.OTHER
 
     def test_none_inputs(self):
         assert classify_commodity(None, None) == Commodity.OTHER
-
-    def test_uranium_not_confused(self):
-        assert classify_commodity("uranium exploration in Saskatchewan", "Uranium") == Commodity.URANIUM
 
 
 class TestClassifyJurisdiction:
@@ -119,6 +116,9 @@ class TestClassifyJurisdiction:
 
     def test_australia_tier1(self):
         assert classify_jurisdiction("Australia") == JurisdictionTier.TIER_1
+
+    def test_germany_tier1(self):
+        assert classify_jurisdiction("Germany") == JurisdictionTier.TIER_1
 
     def test_mexico_tier2(self):
         assert classify_jurisdiction("Mexico") == JurisdictionTier.TIER_2

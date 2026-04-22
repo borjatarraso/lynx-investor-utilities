@@ -3,15 +3,15 @@ requires = ["setuptools>=68"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name            = "lynx-investor-energy"
-version         = "2.0"
-description     = "Lynx Energy — Fundamental analysis specialized for oil & gas, uranium, coal & energy companies"
+name            = "lynx-investor-utilities"
+version         = "3.0"
+description     = "Lynx Utilities — Fundamental analysis specialized for regulated electric, gas, water, multi-utilities, IPPs, and YieldCos"
 readme          = "README.md"
 requires-python = ">=3.10"
 license         = {text = "BSD-3-Clause"}
 authors         = [{name = "Borja Tarraso", email = "borja.tarraso@member.fsf.org"}]
 dependencies    = [
-    "lynx-investor-core>=1.0",
+    "lynx-investor-core>=2.0",
     "yfinance>=0.2.40",
     "requests>=2.31",
     "beautifulsoup4>=4.12",
@@ -26,10 +26,10 @@ dependencies    = [
 pdf = ["weasyprint>=60"]
 
 [project.scripts]
-lynx-energy = "lynx_energy.__main__:main"
+lynx-utilities = "lynx_utilities.__main__:main"
 
 [tool.setuptools.packages.find]
-include = ["lynx_energy*"]
+include = ["lynx_utilities*"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

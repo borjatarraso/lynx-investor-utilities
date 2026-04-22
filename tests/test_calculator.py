@@ -1,11 +1,11 @@
 """Unit tests for the metrics calculator."""
 
 import pytest
-from lynx_energy.models import (
+from lynx_utilities.models import (
     CompanyStage, CompanyTier, FinancialStatement,
     GrowthMetrics, ProfitabilityMetrics, ShareStructure, SolvencyMetrics,
 )
-from lynx_energy.metrics.calculator import (
+from lynx_utilities.metrics.calculator import (
     calc_valuation, calc_profitability, calc_solvency, calc_growth,
     calc_efficiency, calc_share_structure, calc_energy_quality,
     calc_intrinsic_value,
@@ -147,7 +147,7 @@ class TestCalcIntrinsicValue:
     def test_method_selection_explorer(self, sample_info, sample_statements):
         iv = calc_intrinsic_value(sample_info, sample_statements, GrowthMetrics(),
                                   SolvencyMetrics(), CompanyTier.MICRO, CompanyStage.EXPLORER)
-        assert "EV/Resource" in (iv.primary_method or "")
+        assert "Pipeline" in (iv.primary_method or "")
 
     def test_method_selection_grassroots(self, sample_info, sample_statements):
         iv = calc_intrinsic_value(sample_info, sample_statements, GrowthMetrics(),
@@ -155,8 +155,8 @@ class TestCalcIntrinsicValue:
         assert "Cash" in (iv.primary_method or "")
 
 
-class TestNewEnergyMetrics:
-    """Tests for v0.3+ energy-specific metrics."""
+class TestNewUtilitiesMetrics:
+    """Tests for v0.3+ utilities-specific metrics."""
 
     def test_fcf_yield_calculated(self, sample_info, sample_statements):
         v = calc_valuation(sample_info, sample_statements, CompanyTier.MID, CompanyStage.PRODUCER)

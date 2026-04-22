@@ -1,12 +1,12 @@
 """Unit tests for the conclusion engine."""
 
 import pytest
-from lynx_energy.models import (
+from lynx_utilities.models import (
     AnalysisReport, CompanyProfile, CompanyStage, CompanyTier,
     ValuationMetrics, SolvencyMetrics, GrowthMetrics,
     EnergyQualityIndicators, ShareStructure,
 )
-from lynx_energy.core.conclusion import generate_conclusion
+from lynx_utilities.core.conclusion import generate_conclusion
 
 
 @pytest.fixture
@@ -54,7 +54,7 @@ class TestGenerateConclusion:
     def test_explorer_has_stage_note(self, explorer_report):
         c = generate_conclusion(explorer_report)
         assert c.stage_note != ""
-        assert "Explorer" in c.stage_note or "EV/resource" in c.stage_note
+        assert "Development" in c.stage_note or "pipeline" in c.stage_note.lower()
 
     def test_category_scores_present(self, explorer_report):
         c = generate_conclusion(explorer_report)
@@ -79,9 +79,9 @@ class TestGenerateConclusion:
         assert len(c.strengths) >= 1
 
     def test_extreme_dilution_penalized_more(self):
-        """Bug #8: >20% dilution should get -25 penalty, not just -15."""
-        from lynx_energy.core.conclusion import _score_growth
-        from lynx_energy.models import GrowthMetrics
+        """Pre-operational dilution >15% should trigger -25 penalty."""
+        from lynx_utilities.core.conclusion import _score_growth
+        from lynx_utilities.models import GrowthMetrics
         r = AnalysisReport(
             profile=CompanyProfile(
                 ticker="T", name="T", stage=CompanyStage.EXPLORER, tier=CompanyTier.MICRO
@@ -89,5 +89,5 @@ class TestGenerateConclusion:
             growth=GrowthMetrics(shares_growth_yoy=0.25),  # 25% dilution
         )
         score = _score_growth(r)
-        # Should be 50 - 25 = 25 (extreme penalty), not 50 - 15 = 35
+        # Under the utilities calibration (>15% = -25), 50 - 25 = 25.
         assert score == 25

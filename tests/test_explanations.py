@@ -1,7 +1,7 @@
 """Unit tests for metric explanations."""
 
 import pytest
-from lynx_energy.metrics.explanations import (
+from lynx_utilities.metrics.explanations import (
     get_explanation, list_metrics, get_section_explanation,
     get_conclusion_explanation, SECTION_EXPLANATIONS, CONCLUSION_METHODOLOGY,
 )
@@ -25,12 +25,15 @@ class TestGetExplanation:
             assert m.formula != ""
             assert m.category != ""
 
-    def test_energy_specific_metrics_exist(self):
+    def test_utilities_specific_metrics_exist(self):
         keys = [m.key for m in list_metrics()]
         assert "cash_to_market_cap" in keys
         assert "quality_score" in keys
         assert "shares_growth_yoy" in keys
-        assert "burn_as_pct_of_market_cap" in keys
+        assert "dividend_coverage" in keys
+        assert "dividend_payout_ratio" in keys
+        assert "debt_service_coverage" in keys
+        assert "capex_to_revenue" in keys
 
     def test_list_by_category(self):
         valuation = list_metrics("valuation")
@@ -44,10 +47,10 @@ class TestSectionExplanations:
             assert "title" in sec
             assert "description" in sec
 
-    def test_energy_quality_section_exists(self):
-        sec = get_section_explanation("energy_quality")
+    def test_utilities_quality_section_exists(self):
+        sec = get_section_explanation("energy_quality")   # schema key kept for suite parity
         assert sec is not None
-        assert "Energy Quality" in sec["title"]
+        assert "Utilities Quality" in sec["title"]
 
     def test_share_structure_section_exists(self):
         sec = get_section_explanation("share_structure")
@@ -61,7 +64,7 @@ class TestConclusionMethodology:
     def test_overall_exists(self):
         ce = get_conclusion_explanation("overall")
         assert ce is not None
-        assert "energy quality" in ce["description"].lower()
+        assert "utility quality" in ce["description"].lower()
 
     def test_unknown_category(self):
         assert get_conclusion_explanation("nonexistent") is None

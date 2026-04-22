@@ -1,7 +1,7 @@
 """Unit tests for the storage module."""
 
 import pytest
-from lynx_energy.core.storage import (
+from lynx_utilities.core.storage import (
     set_mode, get_mode, is_testing, get_data_root,
     has_cache, drop_cache_all,
 )

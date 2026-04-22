@@ -3,20 +3,20 @@
 import math
 import pytest
 
-from lynx_energy.models import (
+from lynx_utilities.models import (
     AnalysisReport, CompanyProfile, CompanyStage, CompanyTier,
     ValuationMetrics, SolvencyMetrics, GrowthMetrics,
     EnergyQualityIndicators, ShareStructure, MarketIntelligence,
     FinancialStatement, InsiderTransaction,
 )
-from lynx_energy.core.conclusion import generate_conclusion
-from lynx_energy.core.storage import _sanitize_ticker, set_mode, get_company_dir
-from lynx_energy.core.ticker import is_isin
-from lynx_energy.metrics.calculator import (
+from lynx_utilities.core.conclusion import generate_conclusion
+from lynx_utilities.core.storage import _sanitize_ticker, set_mode, get_company_dir
+from lynx_utilities.core.ticker import is_isin
+from lynx_utilities.metrics.calculator import (
     calc_valuation, calc_solvency, calc_growth, calc_share_structure,
     calc_energy_quality, calc_intrinsic_value,
 )
-from lynx_energy.export import export_report, ExportFormat
+from lynx_utilities.export import export_report, ExportFormat
 from pathlib import Path
 import tempfile
 

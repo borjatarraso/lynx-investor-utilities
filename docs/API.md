@@ -1,11 +1,11 @@
-# Lynx Energy Analysis -- API Reference
+# Lynx Utilities Analysis -- API Reference
 
-Public Python API for the `lynx_energy` package (v0.4).
+Public Python API for the `lynx_utilities` package (v0.4).
 
 ## Package Structure
 
 ```
-lynx_energy/
+lynx_utilities/
 ├── __init__.py          # Version, about text
 ├── __main__.py          # Entry point
 ├── cli.py               # CLI argument parser
@@ -25,7 +25,7 @@ lynx_energy/
 │   ├── calculator.py    # Metric calculations
 │   ├── relevance.py     # Metric relevance by stage/tier
 │   ├── explanations.py  # Metric educational content
-│   └── sector_insights.py # Energy industry insights
+│   └── sector_insights.py # Utilities industry insights
 ├── export/
 │   ├── __init__.py      # Export dispatcher
 │   ├── txt_export.py    # Plain text export
@@ -42,7 +42,7 @@ lynx_energy/
 
 ## Core API
 
-### Analysis (`lynx_energy.core.analyzer`)
+### Analysis (`lynx_utilities.core.analyzer`)
 
 #### `run_full_analysis`
 
@@ -57,7 +57,7 @@ def run_full_analysis(
 ) -> AnalysisReport
 ```
 
-Run a complete fundamental analysis for an energy company.
+Run a complete fundamental analysis for a utility company.
 This is a convenience wrapper around `run_progressive_analysis` with
 `on_progress=None`.
 
@@ -65,7 +65,7 @@ This is a convenience wrapper around `run_progressive_analysis` with
 
 | Parameter | Type | Default | Description |
 |---|---|---|---|
-| `identifier` | `str` | required | Ticker symbol (`XOM`), ISIN (`US30231G1022`), or company name (`Cenovus Energy`). |
+| `identifier` | `str` | required | Ticker symbol (`NEE`), ISIN (`US65339F1012`), or company name (`NextEra Energy`). |
 | `download_reports` | `bool` | `True` | Fetch SEC/SEDAR filings. |
 | `download_news` | `bool` | `True` | Fetch recent news articles. |
 | `max_filings` | `int` | `10` | Maximum number of filings to download locally. |
@@ -77,7 +77,7 @@ This is a convenience wrapper around `run_progressive_analysis` with
 **Example:**
 
 ```python
-from lynx_energy.core.analyzer import run_full_analysis
+from lynx_utilities.core.analyzer import run_full_analysis
 
 report = run_full_analysis("XOM")
 print(report.profile.name)       # "Exxon Mobil Corporation"
@@ -115,7 +115,7 @@ update the display incrementally.
 **Example:**
 
 ```python
-from lynx_energy.core.analyzer import run_progressive_analysis
+from lynx_utilities.core.analyzer import run_progressive_analysis
 
 def on_progress(stage: str, report):
     print(f"Stage complete: {stage}")
@@ -125,7 +125,7 @@ report = run_progressive_analysis("CVE.TO", on_progress=on_progress)
 
 ---
 
-### Conclusion (`lynx_energy.core.conclusion`)
+### Conclusion (`lynx_utilities.core.conclusion`)
 
 #### `generate_conclusion`
 
@@ -136,7 +136,7 @@ def generate_conclusion(report: AnalysisReport) -> AnalysisConclusion
 Synthesize a scored verdict from a completed `AnalysisReport`.
 
 Scoring weights are determined by the company's `(stage, tier)` combination.
-For example, solvency and energy quality are weighted much more heavily for
+For example, solvency and utility quality are weighted much more heavily for
 nano-cap explorers than for mega-cap producers.
 
 **Returns:** `AnalysisConclusion` with:
@@ -153,7 +153,7 @@ nano-cap explorers than for mega-cap producers.
 **Example:**
 
 ```python
-from lynx_energy.core.conclusion import generate_conclusion
+from lynx_utilities.core.conclusion import generate_conclusion
 
 conclusion = generate_conclusion(report)
 print(conclusion.verdict)          # "Hold"
@@ -164,7 +164,7 @@ print(conclusion.screening_checklist)
 
 ---
 
-## Data Models (`lynx_energy.models`)
+## Data Models (`lynx_utilities.models`)
 
 All models are Python `dataclasses`.  Every numeric field defaults to `None`
 (meaning "not available") unless otherwise noted.
@@ -175,7 +175,7 @@ All models are Python `dataclasses`.  Every numeric field defaults to `None`
 |---|---|
 | `CompanyTier` | `MEGA`, `LARGE`, `MID`, `SMALL`, `MICRO`, `NANO` |
 | `CompanyStage` | `GRASSROOTS`, `EXPLORER`, `DEVELOPER`, `PRODUCER`, `ROYALTY` |
-| `Commodity` | `OIL`, `NATURAL_GAS`, `URANIUM`, `COAL`, `LNG`, `REFINED_PRODUCTS`, `OTHER` |
+| `Commodity` | `REGULATED_ELECTRIC`, `REGULATED_GAS`, `WATER`, `MULTI_UTILITY`, `MERCHANT_POWER`, `RENEWABLE_POWER`, `NUCLEAR_GENERATION`, `TRANSMISSION_DISTRIBUTION`, `DIVERSIFIED_UTILITY`, `OTHER` |
 | `JurisdictionTier` | `TIER_1` (Low Risk), `TIER_2` (Moderate Risk), `TIER_3` (High Risk), `UNKNOWN` |
 | `Relevance` | `CRITICAL`, `IMPORTANT`, `RELEVANT`, `CONTEXTUAL`, `IRRELEVANT` |
 
@@ -190,8 +190,8 @@ Company identity and classification.
 | `ticker` | `str` | Resolved ticker symbol. |
 | `name` | `str` | Company name. |
 | `isin` | `Optional[str]` | ISIN code if resolved. |
-| `sector` | `Optional[str]` | Sector (e.g. `"Energy"`). |
-| `industry` | `Optional[str]` | Industry (e.g. `"Oil & Gas Integrated"`). |
+| `sector` | `Optional[str]` | Sector (e.g. `"Utilities"`). |
+| `industry` | `Optional[str]` | Industry (e.g. `"Utilities—Regulated Electric"`). |
 | `country` | `Optional[str]` | Country of domicile. |
 | `exchange` | `Optional[str]` | Primary exchange. |
 | `currency` | `Optional[str]` | Reporting currency. |
@@ -200,14 +200,14 @@ Company identity and classification.
 | `website` | `Optional[str]` | Corporate website. |
 | `employees` | `Optional[int]` | Number of employees. |
 | `tier` | `CompanyTier` | Market-cap tier (default `NANO`). |
-| `stage` | `CompanyStage` | Energy development stage (default `GRASSROOTS`). |
-| `primary_commodity` | `Commodity` | Primary commodity (default `OTHER`). |
+| `stage` | `CompanyStage` | Utility operating stage (default `GRASSROOTS`). |
+| `primary_commodity` | `Commodity` | Primary service type (default `OTHER`). |
 | `jurisdiction_tier` | `JurisdictionTier` | Jurisdiction risk tier (default `UNKNOWN`). |
 | `jurisdiction_country` | `Optional[str]` | Country used for jurisdiction classification. |
 
 #### `ValuationMetrics`
 
-Traditional and energy-specific valuation ratios.
+Traditional and utilities-specific valuation ratios (rate-base proxies, dividend yield, FCF yield).
 
 Key fields: `pe_trailing`, `pe_forward`, `pb_ratio`, `ps_ratio`, `p_fcf`,
 `ev_ebitda`, `ev_revenue`, `peg_ratio`, `dividend_yield`, `earnings_yield`,
@@ -217,12 +217,16 @@ Key fields: `pe_trailing`, `pe_forward`, `pb_ratio`, `ps_ratio`, `p_fcf`,
 
 #### `ProfitabilityMetrics`
 
-Margins and returns, plus energy-specific cost metrics.
+Margins and returns, plus utilities-specific cash-flow quality metrics.
 
 Key fields: `roe`, `roa`, `roic`, `gross_margin`, `operating_margin`,
-`net_margin`, `fcf_margin`, `ebitda_margin`, `netback_per_boe`, `netback_unit`,
-`operating_cost_per_boe`, `netback_margin`, `ocf_to_net_income`,
+`net_margin`, `fcf_margin`, `ebitda_margin`, `croci`, `ocf_to_net_income`,
 `fcf_per_share`, `ocf_per_share`, `fcf_conversion`.
+
+> **Schema-parity fields (unused in utilities):** `netback_per_boe`,
+> `netback_unit`, `operating_cost_per_boe`, `netback_margin`. These are
+> preserved from the shared Lince suite schema and populated by sister agents
+> (e.g. `lynx-energy`).
 
 #### `SolvencyMetrics`
 
@@ -257,6 +261,11 @@ Key fields: `asset_turnover`, `inventory_turnover`, `receivables_turnover`,
 #### `EnergyQualityIndicators`
 
 Composite quality score and qualitative assessments.
+
+> **Name kept for schema parity with the rest of the Lince Investor suite.**
+> For utilities, interpret the fields as follows: `reserve_quality` = rate-base
+> quality; `reserve_life_assessment` = asset useful-life assessment;
+> `production_scale_assessment` = MW / customer-scale assessment.
 
 Key fields: `quality_score` (0-100), `management_quality`,
 `insider_ownership_pct`, `management_track_record`,
@@ -327,8 +336,10 @@ Fields: `period`, `revenue`, `cost_of_revenue`, `gross_profit`,
 `total_assets`, `total_liabilities`, `total_equity`, `total_debt`,
 `total_cash`, `current_assets`, `current_liabilities`,
 `operating_cash_flow`, `capital_expenditure`, `free_cash_flow`,
-`dividends_paid`, `shares_outstanding`, `eps`, `book_value_per_share`,
-`exploration_expenditure`, `oil_gas_properties`.
+`dividends_paid`, `shares_outstanding`, `eps`, `book_value_per_share`.
+
+> **Schema-parity fields (unused in utilities):** `exploration_expenditure`,
+> `oil_gas_properties`. Preserved from the shared Lince suite schema.
 
 #### `AnalysisConclusion`
 
@@ -374,7 +385,7 @@ The main container returned by analysis functions.
 
 ---
 
-## Classification Helpers (`lynx_energy.models`)
+## Classification Helpers (`lynx_utilities.models`)
 
 #### `classify_tier`
 
@@ -403,7 +414,7 @@ def classify_stage(
 ) -> CompanyStage
 ```
 
-Classify energy company development stage by keyword matching against the
+Classify utility company operating stage by keyword matching against the
 company description.  Companies with revenue > $10M and royalty/streaming
 keywords are classified as `ROYALTY`.  Falls back to industry-based heuristics
 from `info` if no keywords match.
@@ -417,7 +428,7 @@ def classify_commodity(
 ) -> Commodity
 ```
 
-Identify primary commodity from description and industry text using
+Identify primary service type from description and industry text using
 keyword frequency scoring.  Uses word-boundary matching for short keywords
 to avoid false positives.
 
@@ -438,7 +449,7 @@ Classify jurisdiction risk:
 
 ---
 
-## Metrics Calculator (`lynx_energy.metrics.calculator`)
+## Metrics Calculator (`lynx_utilities.metrics.calculator`)
 
 All `calc_*` functions accept `info` (yfinance info dict), `statements`
 (list of `FinancialStatement`), and tier/stage classification.  They return
@@ -447,8 +458,8 @@ data.
 
 | Function | Returns | Description |
 |---|---|---|
-| `calc_valuation(info, statements, tier, stage)` | `ValuationMetrics` | P/E, P/B, EV/EBITDA, P/FCF, cash-to-market-cap, tangible book, NCAV. Energy-specific: EV/resource, P/NAV. |
-| `calc_profitability(info, statements, tier, stage)` | `ProfitabilityMetrics` | ROE, ROA, ROIC, gross/operating/net/FCF/EBITDA margins. Energy-specific: netback. |
+| `calc_valuation(info, statements, tier, stage)` | `ValuationMetrics` | P/E, P/B, EV/EBITDA, P/FCF, cash-to-market-cap, tangible book, NCAV. Utility-specific: P/Rate Base (P/B proxy), dividend yield, FCF yield. |
+| `calc_profitability(info, statements, tier, stage)` | `ProfitabilityMetrics` | ROE, ROA, ROIC, gross/operating/net/FCF/EBITDA margins. Utility-specific: compared against allowed ROE. |
 | `calc_solvency(info, statements, tier, stage)` | `SolvencyMetrics` | D/E, current/quick ratios, Altman Z, cash burn rate, cash runway, working capital, NCAV. |
 | `calc_growth(statements, tier, stage)` | `GrowthMetrics` | Revenue/earnings YoY and CAGR (3y, 5y). Share dilution YoY and 3y CAGR. Book value growth. |
 | `calc_efficiency(info, statements, tier)` | `EfficiencyMetrics` | Asset turnover. |
@@ -459,7 +470,7 @@ data.
 
 ---
 
-## Relevance System (`lynx_energy.metrics.relevance`)
+## Relevance System (`lynx_utilities.metrics.relevance`)
 
 #### `get_relevance`
 
@@ -475,7 +486,7 @@ def get_relevance(
 Look up the relevance level of a metric given the company's tier and stage.
 
 **Stage overrides take precedence** over tier-based lookups, because
-development stage is the primary analytical axis for energy companies.
+operating stage is the primary analytical axis for utility companies.
 
 **Parameters:**
 
@@ -484,7 +495,7 @@ development stage is the primary analytical axis for energy companies.
 | `metric_key` | `str` | Metric field name (e.g. `"cash_runway_years"`, `"pe_trailing"`). |
 | `tier` | `CompanyTier` | Company size tier. |
 | `category` | `str` | One of `"valuation"`, `"profitability"`, `"solvency"`, `"growth"`, `"energy_quality"`, `"share_structure"`. |
-| `stage` | `CompanyStage` | Energy development stage. |
+| `stage` | `CompanyStage` | Utility operating stage. |
 
 **Returns:** `Relevance` enum value.
 
@@ -527,7 +538,7 @@ which metrics are driving the verdict.
 
 ---
 
-## Storage (`lynx_energy.core.storage`)
+## Storage (`lynx_utilities.core.storage`)
 
 Two isolated data directories: `data/` (production) and `data_test/` (testing).
 
@@ -597,7 +608,7 @@ Delete all cached data.  Returns the number of ticker directories removed.
 
 ---
 
-## Ticker Resolution (`lynx_energy.core.ticker`)
+## Ticker Resolution (`lynx_utilities.core.ticker`)
 
 #### `resolve_identifier`
 
@@ -610,7 +621,7 @@ Resolve a user-provided identifier to a `(ticker, isin)` tuple.
 Accepts:
 - **Ticker symbols:** `XOM`, `CVE.TO`, `OVV`
 - **ISIN codes:** `US30231G1022` (12-character format)
-- **Company names:** `"Cenovus Energy"`, `"Exxon Mobil"`
+- **Company names:** `"NextEra Energy"`, `"Duke Energy"`
 
 Resolution strategy:
 1. ISIN -- search via yfinance, return best equity match.
@@ -643,7 +654,7 @@ class SearchResult:
 
 ---
 
-## Export (`lynx_energy.export`)
+## Export (`lynx_utilities.export`)
 
 #### `export_report`
 
@@ -668,12 +679,12 @@ Export an analysis report to the specified format.
 **Returns:** `Path` to the written file.
 
 ```python
-from lynx_energy.export import ExportFormat
+from lynx_utilities.export import ExportFormat
 ```
 
 ---
 
-## Sector Insights (`lynx_energy.metrics.sector_insights`)
+## Sector Insights (`lynx_utilities.metrics.sector_insights`)
 
 #### `get_sector_insight`
 
@@ -695,7 +706,7 @@ class SectorInsight:
     typical_valuation: str
 ```
 
-Available sectors: `"Energy"`.
+Available sectors: `"Utilities"`.
 
 #### `get_industry_insight`
 
@@ -718,8 +729,9 @@ class IndustryInsight:
     typical_valuation: str
 ```
 
-Available industries: `"Oil & Gas Integrated"`, `"Oil & Gas E&P"`,
-`"Oil & Gas Midstream"`, `"Uranium"`, `"Thermal Coal"`.
+Available industries: `"Utilities — Regulated Electric"`, `"Utilities — Regulated Gas"`,
+`"Utilities — Multi-Utilities"`, `"Utilities — Renewable Electricity"`, `"Utilities — Independent Power Producers"`,
+`"Utilities — Regulated Water"`, `"Utilities — Diversified"`.
 
 ---
 
@@ -728,15 +740,15 @@ Available industries: `"Oil & Gas Integrated"`, `"Oil & Gas E&P"`,
 ### 1. Basic Analysis
 
 ```python
-from lynx_energy.core.analyzer import run_full_analysis
-from lynx_energy.core.conclusion import generate_conclusion
+from lynx_utilities.core.analyzer import run_full_analysis
+from lynx_utilities.core.conclusion import generate_conclusion
 
 report = run_full_analysis("XOM")
 
 print(f"{report.profile.name} ({report.profile.ticker})")
 print(f"Tier: {report.profile.tier.value}")
 print(f"Stage: {report.profile.stage.value}")
-print(f"Commodity: {report.profile.primary_commodity.value}")
+print(f"Service Type: {report.profile.primary_commodity.value}")
 print(f"Jurisdiction: {report.profile.jurisdiction_tier.value}")
 
 conclusion = generate_conclusion(report)
@@ -746,7 +758,7 @@ print(f"Score: {conclusion.overall_score}/100 -- {conclusion.verdict}")
 ### 2. Progressive Analysis with Callback
 
 ```python
-from lynx_energy.core.analyzer import run_progressive_analysis
+from lynx_utilities.core.analyzer import run_progressive_analysis
 
 def progress_handler(stage: str, report):
     if stage == "profile":
@@ -797,8 +809,8 @@ if report.intrinsic_value:
 ### 4. Checking Metric Relevance
 
 ```python
-from lynx_energy.metrics.relevance import get_relevance
-from lynx_energy.models import CompanyTier, CompanyStage, Relevance
+from lynx_utilities.metrics.relevance import get_relevance
+from lynx_utilities.models import CompanyTier, CompanyStage, Relevance
 
 # For a nano-cap grassroots explorer, which metrics matter?
 tier = CompanyTier.NANO
@@ -821,8 +833,8 @@ assert rel == Relevance.CRITICAL
 
 ```python
 from pathlib import Path
-from lynx_energy.core.analyzer import run_full_analysis
-from lynx_energy.export import ExportFormat, export_report
+from lynx_utilities.core.analyzer import run_full_analysis
+from lynx_utilities.export import ExportFormat, export_report
 
 report = run_full_analysis("CCO.TO")
 

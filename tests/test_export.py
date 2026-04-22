@@ -4,19 +4,19 @@ import pytest
 import tempfile
 from pathlib import Path
 
-from lynx_energy.models import (
+from lynx_utilities.models import (
     AnalysisReport, CompanyProfile, CompanyTier, CompanyStage,
     ValuationMetrics, SolvencyMetrics, GrowthMetrics,
     EnergyQualityIndicators, ShareStructure, MarketIntelligence,
 )
-from lynx_energy.export import export_report, ExportFormat
+from lynx_utilities.export import export_report, ExportFormat
 
 
 @pytest.fixture
 def sample_report():
-    p = CompanyProfile(ticker="TEST", name="Test Energy Corp",
-                       sector="Energy", industry="Oil & Gas E&P",
-                       country="Canada", market_cap=100_000_000)
+    p = CompanyProfile(ticker="TEST", name="Test Utility Corp",
+                       sector="Utilities", industry="Utilities—Regulated Electric",
+                       country="United States", market_cap=100_000_000)
     p.tier = CompanyTier.MICRO
     p.stage = CompanyStage.EXPLORER
     r = AnalysisReport(
@@ -60,12 +60,13 @@ class TestTxtExport:
         with tempfile.NamedTemporaryFile(suffix=".txt", delete=False) as f:
             p = export_report(sample_report, "txt", Path(f.name))
             content = p.read_text()
-            assert "Test Energy Corp" in content
+            assert "Test Utility Corp" in content
 
     def test_contains_stage(self, sample_report):
         with tempfile.NamedTemporaryFile(suffix=".txt", delete=False) as f:
             content = export_report(sample_report, "txt", Path(f.name)).read_text()
-            assert "Explorer" in content
+            # EXPLORER stage label is now "Development-Stage Utility"
+            assert "Development" in content or "Utility" in content
 
     def test_no_truncation(self, sample_report):
         with tempfile.NamedTemporaryFile(suffix=".txt", delete=False) as f:

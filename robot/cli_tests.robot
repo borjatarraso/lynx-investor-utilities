@@ -1,11 +1,11 @@
 *** Settings ***
-Documentation    CLI integration tests for lynx-energy
+Documentation    CLI integration tests for lynx-utilities
 Library          Process
 Library          OperatingSystem
 
 *** Variables ***
 ${PYTHON}        python3
-${MODULE}        lynx_energy
+${MODULE}        lynx_utilities
 
 *** Keywords ***
 Run App
@@ -16,7 +16,7 @@ Run App
 
 Given The Application Is Available
     Run App    --version
-    Should Contain    ${OUTPUT}    lynx-energy
+    Should Contain    ${OUTPUT}    lynx-utilities
 
 When I Run The Help Command
     Run App    -p    --help
@@ -65,7 +65,7 @@ Show Help
     Given The Application Is Available
     When I Run The Help Command
     Then The Exit Code Should Be 0
-    Then The Output Should Contain "lynx-energy"
+    Then The Output Should Contain "lynx-utilities"
     Then The Output Should Contain "production-mode"
     Then The Output Should Contain "testing-mode"
     Then The Output Should Contain "--gui"
@@ -76,8 +76,8 @@ Show Version
     Given The Application Is Available
     When I Run Version
     Then The Exit Code Should Be 0
-    Then The Output Should Contain "lynx-energy"
-    Then The Output Should Contain "2.0"
+    Then The Output Should Contain "lynx-utilities"
+    Then The Output Should Contain "3.0"
     Then The Output Should Contain "Lince Investor Suite"
 
 Show About
@@ -85,7 +85,7 @@ Show About
     Given The Application Is Available
     When I Run About
     Then The Exit Code Should Be 0
-    Then The Output Should Contain "Lynx Energy Analysis"
+    Then The Output Should Contain "Lynx Utilities Analysis"
     Then The Output Should Contain "Borja Tarraso"
     Then The Output Should Contain "BSD-3-Clause"
 
@@ -96,7 +96,7 @@ Explain A Valuation Metric
     Then The Exit Code Should Be 0
     Then The Output Should Contain "Cash-to-Market-Cap"
 
-Explain An Energy-Specific Metric
+Explain An Utilities-Specific Metric
     [Documentation]    GIVEN the app WHEN I explain shares_growth_yoy THEN it shows dilution info
     Given The Application Is Available
     When I Explain Metric "shares_growth_yoy"
@@ -120,19 +120,19 @@ Explain A Section
     Given The Application Is Available
     When I Explain Section "energy_quality"
     Then The Exit Code Should Be 0
-    Then The Output Should Contain "Energy Quality"
+    Then The Output Should Contain "Utilities Quality"
 
 Explain Conclusion Methodology
     [Documentation]    GIVEN the app WHEN I explain conclusion THEN it shows scoring method
     Given The Application Is Available
     When I Explain Conclusion "overall"
     Then The Exit Code Should Be 0
-    Then The Output Should Contain "energy quality"
+    Then The Output Should Contain "utility quality"
 
 Search For A Company
     [Documentation]    GIVEN the app WHEN I search for a company THEN results are shown
     Given The Application Is Available
-    When I Search For "uranium"
+    When I Search For "duke energy"
     Then The Exit Code Should Be 0
     Then The Output Should Contain "Search Results"
 
@@ -158,25 +158,25 @@ No Identifier Shows Help
 
 Severity Markers Use New Format
     [Documentation]    GIVEN the display module WHEN severity markers are rendered THEN v0.4 format is used
-    When I Run Python Code "from lynx_energy.display import get_severity_marker; markers = [get_severity_marker(level) for level in ['critical','warning','watch','ok','strong']]; assert '***CRITICAL***' in markers[0] or 'CRITICAL' in markers[0]; print('OK')"
+    When I Run Python Code "from lynx_utilities.display import get_severity_marker; markers = [get_severity_marker(level) for level in ['critical','warning','watch','ok','strong']]; assert '***CRITICAL***' in markers[0] or 'CRITICAL' in markers[0]; print('OK')"
     Then The Exit Code Should Be 0
     Then The Output Should Contain "OK"
 
-Explain New Energy Metric FCF Yield
+Explain New Utility Metric FCF Yield
     [Documentation]    GIVEN the app WHEN I explain fcf_yield THEN it shows details
     Given The Application Is Available
     When I Explain Metric "fcf_yield"
     Then The Exit Code Should Be 0
     Then The Output Should Contain "FCF"
 
-Explain New Energy Metric CROCI
+Explain New Utility Metric CROCI
     [Documentation]    GIVEN the app WHEN I explain croci THEN it shows details
     Given The Application Is Available
     When I Explain Metric "croci"
     Then The Exit Code Should Be 0
     Then The Output Should Contain "CROCI"
 
-Explain New Energy Metric Capex To Revenue
+Explain New Utility Metric Capex To Revenue
     [Documentation]    GIVEN the app WHEN I explain capex_to_revenue THEN it shows details
     Given The Application Is Available
     When I Explain Metric "capex_to_revenue"
