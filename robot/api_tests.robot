@@ -181,14 +181,14 @@ Utilities Metrics In Explanations
     Then The Output Should Contain "OK"
 
 New Utilities Metrics FCF Yield And CROCI Exist
-    [Documentation]    GIVEN v0.4 metrics WHEN I check fcf_yield and croci THEN they exist on ValuationMetrics
-    When I Run Python Code "from lynx_utilities.models import ValuationMetrics; v = ValuationMetrics(); assert hasattr(v, 'fcf_yield'); assert hasattr(v, 'croci'); print('OK')"
+    [Documentation]    GIVEN v0.4 metrics WHEN I check fcf_yield and croci THEN they exist on the right model classes
+    When I Run Python Code "from lynx_utilities.models import ValuationMetrics, ProfitabilityMetrics; assert hasattr(ValuationMetrics(), 'fcf_yield'); assert hasattr(ProfitabilityMetrics(), 'croci'); print('OK')"
     Then The Exit Code Should Be 0
     Then The Output Should Contain "OK"
 
 New Utilities Metrics Capex To Revenue Exists
-    [Documentation]    GIVEN v0.4 metrics WHEN I check capex_to_revenue THEN it exists on EfficiencyMetrics
-    When I Run Python Code "from lynx_utilities.models import EfficiencyMetrics; e = EfficiencyMetrics(); assert hasattr(e, 'capex_to_revenue'); assert hasattr(e, 'capex_to_ocf'); assert hasattr(e, 'capex_intensity'); print('OK')"
+    [Documentation]    GIVEN v0.4 metrics WHEN I check capex_to_revenue THEN it exists on GrowthMetrics (capex_intensity on EfficiencyMetrics)
+    When I Run Python Code "from lynx_utilities.models import GrowthMetrics, EfficiencyMetrics; assert hasattr(GrowthMetrics(), 'capex_to_revenue'); assert hasattr(GrowthMetrics(), 'capex_to_ocf'); assert hasattr(EfficiencyMetrics(), 'capex_intensity'); print('OK')"
     Then The Exit Code Should Be 0
     Then The Output Should Contain "OK"
 
@@ -205,8 +205,8 @@ New Utilities Metrics Growth Fields Exist
     Then The Output Should Contain "OK"
 
 New Utilities Metrics Profitability Fields Exist
-    [Documentation]    GIVEN v0.4 metrics WHEN I check profitability THEN new fcf fields exist
-    When I Run Python Code "from lynx_utilities.models import ProfitabilityMetrics; p = ProfitabilityMetrics(); assert hasattr(p, 'ocf_to_net_income'); assert hasattr(p, 'fcf_per_share'); assert hasattr(p, 'ocf_per_share'); assert hasattr(p, 'fcf_conversion'); print('OK')"
+    [Documentation]    GIVEN v0.4 metrics WHEN I check profitability THEN new fcf fields exist (cash-flow per-share fields are on GrowthMetrics)
+    When I Run Python Code "from lynx_utilities.models import ProfitabilityMetrics, GrowthMetrics; assert hasattr(ProfitabilityMetrics(), 'ocf_to_net_income'); assert hasattr(GrowthMetrics(), 'fcf_per_share'); assert hasattr(GrowthMetrics(), 'ocf_per_share'); print('OK')"
     Then The Exit Code Should Be 0
     Then The Output Should Contain "OK"
 

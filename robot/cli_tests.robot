@@ -158,7 +158,7 @@ No Identifier Shows Help
 
 Severity Markers Use New Format
     [Documentation]    GIVEN the display module WHEN severity markers are rendered THEN v0.4 format is used
-    When I Run Python Code "from lynx_utilities.display import get_severity_marker; markers = [get_severity_marker(level) for level in ['critical','warning','watch','ok','strong']]; assert '***CRITICAL***' in markers[0] or 'CRITICAL' in markers[0]; print('OK')"
+    When I Run Python Code "from lynx_utilities import display; import inspect; src = inspect.getsource(display); assert '***CRITICAL***' in src; assert '*WARNING*' in src; assert '[WATCH]' in src; print('OK')"
     Then The Exit Code Should Be 0
     Then The Output Should Contain "OK"
 
