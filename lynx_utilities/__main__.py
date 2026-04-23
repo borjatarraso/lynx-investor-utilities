@@ -1,3 +1,4 @@
+# PYTHON_ARGCOMPLETE_OK
 """Entry point for lynx-utilities."""
 
 from lynx_utilities.cli import run_cli
