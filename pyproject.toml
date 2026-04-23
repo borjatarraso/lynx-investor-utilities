@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name            = "lynx-investor-utilities"
-version = "4.0"
+version = "4.0.1"
 description     = "Lynx Utilities — Fundamental analysis specialized for regulated electric, gas, water, multi-utilities, IPPs, and YieldCos"
 readme          = "README.md"
 requires-python = ">=3.10"
