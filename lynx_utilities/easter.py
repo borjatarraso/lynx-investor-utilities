@@ -32,9 +32,26 @@ _EGG = _core_easter.AgentEasterEgg(
     extra_fortunes=_UTILITIES_FORTUNES,
 )
 
+def _pylon_ascii(sublabel: str) -> str:
+    return (
+        "\n[bold yellow]\n"
+        "       |\n"
+        "    ---+---\n"
+        "     / | \\\n"
+        "    /  |  \\             [bold white]G R I D   U P[/bold white]\n"
+        f"   +---+---+           [dim]{sublabel}[/dim]\n"
+        "       |\n"
+        "      / \\\n"
+        "     /   \\\n"
+        "    /_____\\\n"
+        "[/bold yellow]\n"
+    )
+
+
 # Pre-rendered ASCII variants (legacy callers that import these directly).
 LYNX_ASCII = _core_easter._lynx_ascii(_EGG.label)
 PICKAXE_ASCII = _core_easter._pickaxe_ascii(_EGG.sublabel)
+PYLON_ASCII = _pylon_ascii(_EGG.sublabel)
 
 
 def rich_matrix(console, duration: float = 3.0) -> None:
@@ -50,7 +67,7 @@ def rich_rocket(console) -> None:
 
 
 def rich_lynx(console) -> None:
-    _core_easter.rich_lynx(console, _EGG)
+    _core_easter.rich_lynx(console, _EGG, secondary_art=PYLON_ASCII)
 
 
 def tk_fireworks(root) -> None:
